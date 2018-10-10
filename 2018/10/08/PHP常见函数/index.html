@@ -272,7 +272,7 @@ height:50vh;
                 
                 
                     <div class="post-intro-read">
-                        <span>字数统计: <span class="post-count word-count">797</span>阅读时长: <span class="post-count reading-time">3 min</span></span>
+                        <span>字数统计: <span class="post-count word-count">1k</span>阅读时长: <span class="post-count reading-time">3 min</span></span>
                     </div>
                 
                 <div class="post-intro-meta">
@@ -441,6 +441,40 @@ height:50vh;
 <p>当序列化对象时，PHP 将试图在序列动作之前调用该对象的成员函数 _ _sleep()。这样就允许对象在被序列化之前做任何清除操作。类似的，当使用 unserialize() 恢复对象时， 将调用 _ _wakeup() 成员函数。<br><strong>实例</strong><br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$a = <span class="keyword">array</span>(<span class="string">'a'</span> =&gt; <span class="string">'Apple'</span> ,<span class="string">'b'</span> =&gt; <span class="string">'banana'</span> , <span class="string">'c'</span> =&gt; <span class="string">'Coconut'</span>);</span><br><span class="line"> </span><br><span class="line"><span class="comment">//序列化数组</span></span><br><span class="line">$s = serialize($a);</span><br><span class="line"><span class="keyword">echo</span> $s;</span><br><span class="line"><span class="comment">//输出结果：a:3:&#123;s:1:"a";s:5:"Apple";s:1:"b";s:6:"banana";s:1:"c";s:7:"Coconut";&#125;</span></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
 <h2 id="6-foreach"><a href="#6-foreach" class="headerlink" title="6.foreach()"></a>6.foreach()</h2><p><strong>定义</strong></p>
 <h2 id="7-in-array"><a href="#7-in-array" class="headerlink" title="7.in_array()"></a>7.in_array()</h2><p><strong>定义</strong><br>搜索数组中是否存在指定的值。<br><strong>语法</strong><br><code>bool in_array ( mixed $needle , array $haystack [, bool $strict = FALSE ] )</code><br>|参数    |描述|<br>|——-|——-|<br>|needle |    必需。规定要在数组搜索的值。|<br>|haystack    |必需。规定要搜索的数组。|<br>|strict    |可选。如果该参数设置为 TRUE，则 in_array() 函数检查搜索的数据与数组的值的类型是否相同。|</p>
+<h2 id="8-preg-replace"><a href="#8-preg-replace" class="headerlink" title="8.preg_replace()"></a>8.preg_replace()</h2><p><strong>定义</strong><br>执行一个正则表达式的搜索和替换。<br><strong>语法</strong><br><code>mixed preg_replace ( mixed $pattern , mixed $replacement , mixed $subject [, int $limit = -1 [, int &amp;$count ]] )</code></p>
+<p>搜索 subject 中匹配 pattern 的部分， 以 replacement 进行替换。</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$pattern</td>
+<td>要搜索的模式，可以是字符串或一个字符串数组。</td>
+</tr>
+<tr>
+<td>$replacement</td>
+<td>用于替换的字符串或字符串数组。</td>
+</tr>
+<tr>
+<td>$subject</td>
+<td>要搜索替换的目标字符串或字符串数组。</td>
+</tr>
+<tr>
+<td>$limit</td>
+<td>可选，对于每个模式用于每个 subject 字符串的最大可替换次数。 默认是-1（无限制）。</td>
+</tr>
+<tr>
+<td>$count</td>
+<td>可选，为替换执行的次数。</td>
+</tr>
+</tbody>
+</table>
+<p><strong>返回值</strong><br>如果 subject 是一个数组， preg_replace() 返回一个数组， 其他情况下返回一个字符串。</p>
+<p>如果匹配被查找到，替换后的 subject 被返回，其他情况下 返回没有改变的 subject。如果发生错误，返回 NULL。</p>
 
     </article>
     <!-- license  -->
@@ -449,7 +483,7 @@ height:50vh;
             <p>原文作者：<a href="http://yoursite.com">zhaijiahui</a>
             <p>原文链接：<a href="http://yoursite.com/2018/10/08/PHP常见函数/">http://yoursite.com/2018/10/08/PHP常见函数/</a>
             <p>发表日期：<a href="http://yoursite.com/2018/10/08/PHP常见函数/">October 8th 2018, 10:53:02 am</a>
-            <p>更新日期：<a href="http://yoursite.com/2018/10/08/PHP常见函数/">October 9th 2018, 2:46:17 pm</a>
+            <p>更新日期：<a href="http://yoursite.com/2018/10/08/PHP常见函数/">October 10th 2018, 9:49:18 am</a>
             <p>版权声明：本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
         </div>
     
@@ -458,8 +492,8 @@ height:50vh;
         <li class="next">
             
                 <div class="nextSlogan">Next Post</div>
-                <a href= "/2018/10/08/ecshop/" title= "">
-                    <div class="nextTitle">[Untitled Post]</div>
+                <a href= "/2018/10/08/ecshop/" title= "ECShop 2.7.3 SQL注入/代码执行漏洞分析">
+                    <div class="nextTitle">ECShop 2.7.3 SQL注入/代码执行漏洞分析</div>
                 </a>
             
         </li>
@@ -579,7 +613,7 @@ top:50vh;
         <div class="toc-catalog">
             <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
         </div>
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-empty"><span class="toc-number">1.</span> <span class="toc-text">1. empty()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-strpos"><span class="toc-number">2.</span> <span class="toc-text">2. strpos()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-strncmp"><span class="toc-number">3.</span> <span class="toc-text">3. strncmp()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-explode-implode"><span class="toc-number">4.</span> <span class="toc-text">4.explode()/implode()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-serialize"><span class="toc-number">5.</span> <span class="toc-text">5.serialize()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-foreach"><span class="toc-number">6.</span> <span class="toc-text">6.foreach()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-in-array"><span class="toc-number">7.</span> <span class="toc-text">7.in_array()</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-empty"><span class="toc-number">1.</span> <span class="toc-text">1. empty()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-strpos"><span class="toc-number">2.</span> <span class="toc-text">2. strpos()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-strncmp"><span class="toc-number">3.</span> <span class="toc-text">3. strncmp()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-explode-implode"><span class="toc-number">4.</span> <span class="toc-text">4.explode()/implode()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-serialize"><span class="toc-number">5.</span> <span class="toc-text">5.serialize()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-foreach"><span class="toc-number">6.</span> <span class="toc-text">6.foreach()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-in-array"><span class="toc-number">7.</span> <span class="toc-text">7.in_array()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-preg-replace"><span class="toc-number">8.</span> <span class="toc-text">8.preg_replace()</span></a></li></ol>
     </div>
     
     <div class="back-top iconfont-archer">&#xe639;</div>
@@ -592,22 +626,6 @@ top:50vh;
     <div class="sidebar-content sidebar-content-show-archive">
           <div class="sidebar-panel-archives">
     <!-- 在ejs中将archive按照时间排序 -->
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     
     
@@ -676,7 +694,7 @@ top:50vh;
     
     
         <li class="archive-post-item">
-            <span class="archive-post-date">10/08</span><a class="archive-post-title" href= "/2018/10/08/ecshop/" >[Untitled Post]</a>
+            <span class="archive-post-date">10/08</span><a class="archive-post-title" href= "/2018/10/08/ecshop/" >ECShop 2.7.3 SQL注入/代码执行漏洞分析</a>
         </li>
     
     
@@ -708,8 +726,6 @@ top:50vh;
   </div>
         <div class="sidebar-panel-tags">
     <div class="sidebar-tags-name">
-    
-        <span class="sidebar-tag-name" data-tags="Hexo"><span class="iconfont-archer">&#xe606;</span>Hexo</span>
     
         <span class="sidebar-tag-name" data-tags="PHP"><span class="iconfont-archer">&#xe606;</span>PHP</span>
     
@@ -746,9 +762,9 @@ jsonContent:
         <div class="sidebar-panel-categories">
     <div class="sidebar-categories-name">
     
-        <span class="sidebar-category-name" data-categories="Hexo"><span class="iconfont-archer">&#xe60a;</span>Hexo</span>
-    
         <span class="sidebar-category-name" data-categories="代码审计"><span class="iconfont-archer">&#xe60a;</span>代码审计</span>
+    
+        <span class="sidebar-category-name" data-categories="Hexo"><span class="iconfont-archer">&#xe60a;</span>Hexo</span>
     
     </div>
     <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>

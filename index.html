@@ -361,10 +361,10 @@ height:50vh;
     <article class="index-post">
         <a class="abstract-title" href = "/2018/10/08/ecshop/" >
             
-                <span>[Untitled Post]</span>
+                <span>ECShop 2.7.3 SQL注入/代码执行漏洞分析</span>
         </a>
         <div class="abstract-content">
-            路径：\user.php漏洞点在302行，$action == &#39;login&#39; 处，从这里看的$back_act由$GLOBALS[&#39;_SERVER&#39;][&#39;HTTP_REFERER&#39;]传入，变量可控。条件1：Referer 继续跟进$back_act，在325行被传入assign()函数，该函数用于注册变量，$back_act在函数中被存入_var数组。继续执行$smarty-&gt;display(&#39;user_passport.dwt&#39;);，display()函数用于将参数值在页面中显示出来。路径：\includes\cl...
+            问题一：注入路径：\user.php漏洞点在302行，$action == &#39;login&#39; 处，从这里看的$back_act由$GLOBALS[&#39;_SERVER&#39;][&#39;HTTP_REFERER&#39;]传入，变量可控。[条件1：Referer] 继续跟进$back_act，在325行被传入assign()函数，该函数用于注册变量，$back_act在函数中被存入_var数组。继续执行$smarty-&gt;display(&#39;user_passport.dwt&#39;);，display()函数用于将参数值在页面中显示出来。路径：\inc...
         </div>
         <div class="abstract-post-meta">
             <!-- date  -->
@@ -372,6 +372,12 @@ height:50vh;
                 <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/10/08</span>
             </div>
             <!-- tags  -->
+            
+            <div class= abstract-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "PHP">PHP</a>
+    
+</div>
             
         </div>
     </article>
@@ -743,22 +749,6 @@ More...
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     <div class="total-and-search">
         <div class="total-archive">
         Total : 6
@@ -777,7 +767,7 @@ More...
     
     
         <li class="archive-post-item">
-            <span class="archive-post-date">10/08</span><a class="archive-post-title" href= "/2018/10/08/ecshop/" >[Untitled Post]</a>
+            <span class="archive-post-date">10/08</span><a class="archive-post-title" href= "/2018/10/08/ecshop/" >ECShop 2.7.3 SQL注入/代码执行漏洞分析</a>
         </li>
     
     
@@ -809,8 +799,6 @@ More...
   </div>
         <div class="sidebar-panel-tags">
     <div class="sidebar-tags-name">
-    
-        <span class="sidebar-tag-name" data-tags="Hexo"><span class="iconfont-archer">&#xe606;</span>Hexo</span>
     
         <span class="sidebar-tag-name" data-tags="PHP"><span class="iconfont-archer">&#xe606;</span>PHP</span>
     
@@ -847,9 +835,9 @@ jsonContent:
         <div class="sidebar-panel-categories">
     <div class="sidebar-categories-name">
     
-        <span class="sidebar-category-name" data-categories="Hexo"><span class="iconfont-archer">&#xe60a;</span>Hexo</span>
-    
         <span class="sidebar-category-name" data-categories="代码审计"><span class="iconfont-archer">&#xe60a;</span>代码审计</span>
+    
+        <span class="sidebar-category-name" data-categories="Hexo"><span class="iconfont-archer">&#xe60a;</span>Hexo</span>
     
     </div>
     <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
