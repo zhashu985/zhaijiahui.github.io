@@ -346,6 +346,88 @@
     
     
     <article class="index-post">
+        <a class="abstract-title" href = "/2018/10/08/ecshop/" >
+            
+                <span>[Untitled Post]</span>
+        </a>
+        <div class="abstract-content">
+            路径：\user.php漏洞点在302行，$action == &#39;login&#39; 处，从这里看的$back_act由$GLOBALS[&#39;_SERVER&#39;][&#39;HTTP_REFERER&#39;]传入，变量可控。条件1：Referer 继续跟进$back_act，在325行被传入assign()函数，该函数用于注册变量，$back_act在函数中被存入_var数组。继续执行$smarty-&gt;display(&#39;user_passport.dwt&#39;);，display()函数用于将参数值在页面中显示出来。路径：\includes\cl...
+        </div>
+        <div class="abstract-post-meta">
+            <!-- date  -->
+            <div class="abstract-date">
+                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/10/08</span>
+            </div>
+            <!-- tags  -->
+            
+        </div>
+    </article>
+    
+    
+    
+    
+    
+    
+    <article class="index-post">
+        <a class="abstract-title" href = "/2018/10/08/PHP常见函数/" >
+            
+                <span>PHP常见函数总结</span>
+        </a>
+        <div class="abstract-content">
+            1. empty()定义用于检查一个变量是否为空。语法bool empty (mixed $var)
+empty本质上与!isset($var) || $var == false 等价。
+2. strpos()定义查找字符串在另一字符串中第一次出现的位置语法strpos(string,find,start)注释1、函数区分大小写2、该函数二进制安全相关函数：
+
+strrpos() - 查找字符串在另一字符串中最后一次出现的位置（区分大小写）
+stripos() - 查找字符串在另一字符串中第一次出现的位置（不区分大小写）
+strripos() -查找字符串在另一字符串中最后一次出现的位置...
+        </div>
+        <div class="abstract-post-meta">
+            <!-- date  -->
+            <div class="abstract-date">
+                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/10/08</span>
+            </div>
+            <!-- tags  -->
+            
+            <div class= abstract-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "PHP">PHP</a>
+    
+</div>
+            
+        </div>
+    </article>
+    
+    
+    
+    
+    
+    
+    <article class="index-post">
+        <a class="abstract-title" href = "/2018/10/07/hexo常用使用方法/" >
+            
+                <span>hexo常用使用方法</span>
+        </a>
+        <div class="abstract-content">
+            1.添加tags和categories123456789---title: title #文章标题date: 2016-06-01 23:47:44 #文章生成时间categories: &quot;Hexo教程&quot; #文章分类目录 可省略tags: #文章标题 可省略​     - 标签1​     - 标签2 description: #对本页的描述 可省略---
+
+        </div>
+        <div class="abstract-post-meta">
+            <!-- date  -->
+            <div class="abstract-date">
+                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/10/07</span>
+            </div>
+            <!-- tags  -->
+            
+        </div>
+    </article>
+    
+    
+    
+    
+    
+    
+    <article class="index-post">
         <a class="abstract-title" href = "/2018/10/07/几个不错的hexo主题/" >
             
                 <span>几个不错的hexo主题</span>
@@ -535,9 +617,48 @@ More...
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 3
+        Total : 6
         </div>
         <!-- search  -->
         
@@ -550,6 +671,21 @@ More...
     
     <div class="archive-year"> 2018 </div>
     <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/08</span><a class="archive-post-title" href= "/2018/10/08/ecshop/" >[Untitled Post]</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/08</span><a class="archive-post-title" href= "/2018/10/08/PHP常见函数/" >PHP常见函数总结</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/07</span><a class="archive-post-title" href= "/2018/10/07/hexo常用使用方法/" >hexo常用使用方法</a>
+        </li>
     
     
         <li class="archive-post-item">
@@ -570,6 +706,10 @@ More...
   </div>
         <div class="sidebar-panel-tags">
     <div class="sidebar-tags-name">
+    
+        <span class="sidebar-tag-name" data-tags="Hexo"><span class="iconfont-archer">&#xe606;</span>Hexo</span>
+    
+        <span class="sidebar-tag-name" data-tags="PHP"><span class="iconfont-archer">&#xe606;</span>PHP</span>
     
     </div>
     <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
@@ -603,6 +743,10 @@ jsonContent:
 </div>
         <div class="sidebar-panel-categories">
     <div class="sidebar-categories-name">
+    
+        <span class="sidebar-category-name" data-categories="Hexo"><span class="iconfont-archer">&#xe60a;</span>Hexo</span>
+    
+        <span class="sidebar-category-name" data-categories="代码审计"><span class="iconfont-archer">&#xe60a;</span>代码审计</span>
     
     </div>
     <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
