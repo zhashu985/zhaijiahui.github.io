@@ -22,7 +22,7 @@
     <meta name="description" content="">
     <meta http-equiv="Cache-control" content="no-cache">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-    <title>时光不改&#39;s 回忆录</title>
+    <title>时光不改&#39;s 记忆碎片</title>
     <style type="text/css">
     @font-face {
         font-family: 'Oswald-Regular';
@@ -210,7 +210,7 @@
     <div class="header-sidebar-menu">&#xe775;</div>
     <!-- post页的toggle banner  -->
     
-    <a class="home-link" href=/>时光不改's 回忆录</a>
+    <a class="home-link" href=/>时光不改's 记忆碎片</a>
 </header>
     <div class="wrapper">
         <div class="site-intro" style="
@@ -236,7 +236,7 @@ height:50vh;
         <h1 class="intro-title">
             <!-- 主页  -->
             
-            时光不改's 回忆录
+            时光不改's 记忆碎片
             <!-- 文章页  -->
             
         </h1>
@@ -364,7 +364,7 @@ height:50vh;
                 <span>ECShop 2.7.3 SQL注入/代码执行漏洞分析</span>
         </a>
         <div class="abstract-content">
-            问题一：注入路径：\user.php漏洞点在302行，$action == &#39;login&#39; 处，从这里看的$back_act由$GLOBALS[&#39;_SERVER&#39;][&#39;HTTP_REFERER&#39;]传入，变量可控。[条件1：Referer] 继续跟进$back_act，在325行被传入assign()函数，该函数用于注册变量，$back_act在函数中被存入_var数组。继续执行$smarty-&gt;display(&#39;user_passport.dwt&#39;);，display()函数用于将参数值在页面中显示出来。路径：\inc...
+            问题一：注入路径：\user.php漏洞点在302行，$action == &#39;login&#39; 处，从这里看的$back_act由$GLOBALS[&#39;_SERVER&#39;][&#39;HTTP_REFERER&#39;]传入，变量可控。[条件1：Referer] 继续跟进$back_act，在325行被传入assign()函数，该函数用于注册变量，$back_act在函数中被存入$_var数组中。继续执行$smarty-&gt;display(&#39;user_passport.dwt&#39;);，display()函数用于将参数值在页面中显示出来，跟进dis...
         </div>
         <div class="abstract-post-meta">
             <!-- date  -->
@@ -429,7 +429,8 @@ strripos() -查找字符串在另一字符串中最后一次出现的位置...
         </a>
         <div class="abstract-content">
             1.添加tags和categories123456789---title: title #文章标题date: 2016-06-01 23:47:44 #文章生成时间categories: &quot;Hexo教程&quot; #文章分类目录 可省略tags: #文章标题 可省略​     - 标签1​     - 标签2 description: #对本页的描述 可省略---
-
+2.hexo生成博文插入图片1 把主页配置文件_config.yml 里的post_asset_folder:这个选项设置为true
+2 在你的hexo目录下执行这样一句话npm install hexo-asse...
         </div>
         <div class="abstract-post-meta">
             <!-- date  -->

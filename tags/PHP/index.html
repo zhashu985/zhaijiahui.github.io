@@ -22,7 +22,7 @@
     <meta name="description" content="">
     <meta http-equiv="Cache-control" content="no-cache">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-    <title>时光不改&#39;s 回忆录</title>
+    <title>时光不改&#39;s 记忆碎片</title>
     <style type="text/css">
     @font-face {
         font-family: 'Oswald-Regular';
@@ -210,7 +210,7 @@
     <div class="header-sidebar-menu">&#xe775;</div>
     <!-- post页的toggle banner  -->
     
-    <a class="home-link" href=/>时光不改's 回忆录</a>
+    <a class="home-link" href=/>时光不改's 记忆碎片</a>
 </header>
     <div class="wrapper">
         <div class="site-intro" style="
@@ -351,7 +351,7 @@
                 <span>ECShop 2.7.3 SQL注入/代码执行漏洞分析</span>
         </a>
         <div class="abstract-content">
-            问题一：注入路径：\user.php漏洞点在302行，$action == &#39;login&#39; 处，从这里看的$back_act由$GLOBALS[&#39;_SERVER&#39;][&#39;HTTP_REFERER&#39;]传入，变量可控。[条件1：Referer] 继续跟进$back_act，在325行被传入assign()函数，该函数用于注册变量，$back_act在函数中被存入_var数组。继续执行$smarty-&gt;display(&#39;user_passport.dwt&#39;);，display()函数用于将参数值在页面中显示出来。路径：\inc...
+            问题一：注入路径：\user.php漏洞点在302行，$action == &#39;login&#39; 处，从这里看的$back_act由$GLOBALS[&#39;_SERVER&#39;][&#39;HTTP_REFERER&#39;]传入，变量可控。[条件1：Referer] 继续跟进$back_act，在325行被传入assign()函数，该函数用于注册变量，$back_act在函数中被存入$_var数组中。继续执行$smarty-&gt;display(&#39;user_passport.dwt&#39;);，display()函数用于将参数值在页面中显示出来，跟进dis...
         </div>
         <div class="abstract-post-meta">
             <!-- date  -->
