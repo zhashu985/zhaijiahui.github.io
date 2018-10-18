@@ -346,76 +346,30 @@
     
     
     <article class="index-post">
-        <a class="abstract-title" href = "/2018/10/10/ecshop273/" >
+        <a class="abstract-title" href = "/2018/10/18/IDscan/" >
             
-                <span>ECShop 2.7.3 SQL注入/代码执行漏洞分析</span>
+                <span>IDscan</span>
         </a>
         <div class="abstract-content">
-            漏洞分析问题一：注入路径：\user.php漏洞点在302行，$action == &#39;login&#39; 处，从这里看的$back_act由$GLOBALS[&#39;_SERVER&#39;][&#39;HTTP_REFERER&#39;]传入，变量可控。[条件1：Referer] 继续跟进$back_act，在325行被传入assign()函数，该函数用于注册变量，$back_act在函数中被存入$_var数组中。继续执行$smarty-&gt;display(&#39;user_passport.dwt&#39;);，display()函数用于将参数值在页面中显示出来，跟...
+            IDscanhttps://github.com/zhaijiahui/collect_self_script/tree/master/Information_Disclosure
+check Information_Disclosure
+用于检查信息泄露
+Welcome all friends to mention more suggestions for improvement
+欢迎各位朋友多提改进意见
+Environmentpython 3.x
+pip install requests threadpool
+Catalog
+SVN
+IDscan.py
+threadpool
+http...
         </div>
         <div class="abstract-post-meta">
             <!-- date  -->
             <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/10/10</span>
+                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/10/18</span>
             </div>
             <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "PHP">PHP</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/2018/10/08/PHP常见函数/" >
-            
-                <span>PHP常见函数总结</span>
-        </a>
-        <div class="abstract-content">
-            1. empty()定义用于检查一个变量是否为空。语法bool empty (mixed $var)
-empty本质上与!isset($var) || $var == false 等价。
-2. substr()定义substr() 函数返回字符串的一部分。注释：如果 start 参数是负数且 length 小于或等于 start，则 length 为 0。
-语法substr(string,start,length)
-
-
-
-参数
-描述
-
-
-
-
-string
-必需。规定要返回其中一部分的字符串。
-
-
-start
-必需。规定在字符串的何处开始。
-
-
-length
-可选。规定被返回字符串的长度。...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/10/08</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "PHP">PHP</a>
-    
-</div>
             
         </div>
     </article>
