@@ -346,6 +346,30 @@
     
     
     <article class="index-post">
+        <a class="abstract-title" href = "/2018/10/19/JAWS/" >
+            
+                <span>网络摄像头的安全问题</span>
+        </a>
+        <div class="abstract-content">
+            网络摄像头（IP CAMERAS）在日常生活中越来越普及，交通路口抓取车牌号码，幼儿园用来监控小孩，小区车牌识别系统等等，这些摄像头会跟计算机或者录像等硬件设备连接，以便进行图像存储和及时浏览。很多摄像头还直接跟网络连接，以方便客户通过浏览器或者客户端进行连接管理和查看。商家的本意是为了方便用户进行查看，但很多网络摄像头由于厂商对安全重视不够，黑客通过技术手段可以很方便对存在漏洞的网络摄像头进行存取和浏览，在有些情况下，还可以获取网络摄像头所在服务器的权限，甚至可以渗透进入该摄像头所在网络，危害实在很大。
+一、存在漏洞分析AndrewTierney在其Blog上公布了一片有关摄像头漏洞利...
+        </div>
+        <div class="abstract-post-meta">
+            <!-- date  -->
+            <div class="abstract-date">
+                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/10/19</span>
+            </div>
+            <!-- tags  -->
+            
+        </div>
+    </article>
+    
+    
+    
+    
+    
+    
+    <article class="index-post">
         <a class="abstract-title" href = "/2018/10/18/IDscan/" >
             
                 <span>IDscan 敏感文件扫描器</span>
@@ -384,7 +408,7 @@ threadp...
                 <span>ECShop 2.7.3 SQL注入/代码执行漏洞分析</span>
         </a>
         <div class="abstract-content">
-            漏洞分析问题一：注入路径：\user.php漏洞点在302行，$action == &#39;login&#39; 处，从这里看的$back_act由$GLOBALS[&#39;_SERVER&#39;][&#39;HTTP_REFERER&#39;]传入，变量可控。[条件1：Referer] 继续跟进$back_act，在325行被传入assign()函数，该函数用于注册变量，$back_act在函数中被存入$_var数组中。继续执行$smarty-&gt;display(&#39;user_passport.dwt&#39;);，display()函数用于将参数值在页面中显示出来，跟...
+            漏洞分析问题一：注入路径：\user.php漏洞点在302行，$action == &#39;login&#39; 处，继续往下看的$back_act由$GLOBALS[&#39;_SERVER&#39;][&#39;HTTP_REFERER&#39;]传入，变量可控。[条件1：Referer] 继续跟进$back_act，在325行被传入assign()函数，该函数用于注册变量，$back_act在函数中被存入$_var数组中。继续执行$smarty-&gt;display(&#39;user_passport.dwt&#39;);，display()函数用于将参数值在页面中显示出来，...
         </div>
         <div class="abstract-post-meta">
             <!-- date  -->
@@ -653,9 +677,47 @@ length
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 6
+        Total : 8
         </div>
         <!-- search  -->
         
@@ -665,6 +727,20 @@ length
     
     
     
+    
+    <div class="archive-year"> 2019 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">01/28</span><a class="archive-post-title" href= "/2019/01/28/upload-labs/" >upload-labs</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
     
     <div class="archive-year"> 2018 </div>
     <ul class="year-list">
@@ -706,6 +782,20 @@ length
     
         <li class="archive-post-item">
             <span class="archive-post-date">Invalid date</span><a class="archive-post-title" href= "/2018/10/18/IDscan/" >IDscan 敏感文件扫描器</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
+    
+    <div class="archive-year"> Invalid date </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span><a class="archive-post-title" href= "/2018/10/19/JAWS/" >网络摄像头的安全问题</a>
         </li>
     
     </div>
@@ -753,6 +843,8 @@ jsonContent:
         <span class="sidebar-category-name" data-categories="代码审计"><span class="iconfont-archer">&#xe60a;</span>代码审计</span>
     
         <span class="sidebar-category-name" data-categories="Hexo"><span class="iconfont-archer">&#xe60a;</span>Hexo</span>
+    
+        <span class="sidebar-category-name" data-categories="学习笔记"><span class="iconfont-archer">&#xe60a;</span>学习笔记</span>
     
     </div>
     <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
