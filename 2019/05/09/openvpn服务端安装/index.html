@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <!-- title -->
+
+
+
+
+<!-- keywords -->
+
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" >
+    <meta name="author" content="zhaijiahui">
+    <meta name="renderer" content="webkit">
+    <meta name="copyright" content="zhaijiahui">
+    
+    <meta name="keywords" content="hexo,hexo-theme,hexo-blog">
+    
+    <meta name="description" content="">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>Ubuntu 1804 搭建openvpn · 时光不改&#39;s 记忆碎片</title>
+    <style type="text/css">
+    @font-face {
+        font-family: 'Oswald-Regular';
+        src: url("/font/Oswald-Regular.ttf");
+    }
+
+    body {
+        margin: 0;
+    }
+
+    header,
+    footer,
+    .back-top,
+    .sidebar,
+    .container,
+    .site-intro-meta,
+    .toc-wrapper {
+        display: none;
+    }
+
+    .site-intro {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        /* height: 50vh; */
+        overflow: hidden;
+    }
+
+    .site-intro-placeholder {
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        width: calc(100% + 300px);
+        height: 100%;
+        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
+        background-position: center center;
+        transform: translate3d(-226px, 0, 0);
+        animation: gradient-move 2.5s ease-out 0s infinite;
+    }
+
+    @keyframes gradient-move {
+        0% {
+            transform: translate3d(-226px, 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+
+</style>
+
+    <link rel="preload" href= "/css/style.css?v=20180824" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <link rel="stylesheet" href= "/css/mobile.css?v=20180824" media="(max-width: 980px)">
+    
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    
+    <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+/* This file is meant as a standalone workflow for
+- testing support for link[rel=preload]
+- enabling async CSS loading in browsers that do not support rel=preload
+- applying rel preload css once loaded, whether supported or not.
+*/ -->
+<script>
+(function( w ){
+	"use strict";
+	// rel=preload support test
+	if( !w.loadCSS ){
+		w.loadCSS = function(){};
+	}
+	// define on the loadCSS obj
+	var rp = loadCSS.relpreload = {};
+	// rel=preload feature support test
+	// runs once and returns a function for compat purposes
+	rp.support = (function(){
+		var ret;
+		try {
+			ret = w.document.createElement( "link" ).relList.supports( "preload" );
+		} catch (e) {
+			ret = false;
+		}
+		return function(){
+			return ret;
+		};
+	})();
+
+	// if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+	// then change that media back to its intended value on load
+	rp.bindMediaToggle = function( link ){
+		// remember existing media attr for ultimate state, or default to 'all'
+		var finalMedia = link.media || "all";
+
+		function enableStylesheet(){
+			link.media = finalMedia;
+		}
+
+		// bind load handlers to enable media
+		if( link.addEventListener ){
+			link.addEventListener( "load", enableStylesheet );
+		} else if( link.attachEvent ){
+			link.attachEvent( "onload", enableStylesheet );
+		}
+
+		// Set rel and non-applicable media type to start an async request
+		// note: timeout allows this to happen async to let rendering continue in IE
+		setTimeout(function(){
+			link.rel = "stylesheet";
+			link.media = "only x";
+		});
+		// also enable media after 3 seconds,
+		// which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+		setTimeout( enableStylesheet, 3000 );
+	};
+
+	// loop through link elements in DOM
+	rp.poly = function(){
+		// double check this to prevent external calls from running
+		if( rp.support() ){
+			return;
+		}
+		var links = w.document.getElementsByTagName( "link" );
+		for( var i = 0; i < links.length; i++ ){
+			var link = links[ i ];
+			// qualify links to those with rel=preload and as=style attrs
+			if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+				// prevent rerunning on link
+				link.setAttribute( "data-loadcss", true );
+				// bind listeners to toggle media back
+				rp.bindMediaToggle( link );
+			}
+		}
+	};
+
+	// if unsupported, run the polyfill
+	if( !rp.support() ){
+		// run once at least
+		rp.poly();
+
+		// rerun poly on an interval until onload
+		var run = w.setInterval( rp.poly, 500 );
+		if( w.addEventListener ){
+			w.addEventListener( "load", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		} else if( w.attachEvent ){
+			w.attachEvent( "onload", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		}
+	}
+
+
+	// commonjs
+	if( typeof exports !== "undefined" ){
+		exports.loadCSS = loadCSS;
+	}
+	else {
+		w.loadCSS = loadCSS;
+	}
+}( typeof global !== "undefined" ? global : this ) );
+</script>
+
+    <link rel="icon" href= "/assets/dabai_favicon.ico" />
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js" as="script" />
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" as="script" />
+    <link rel="preload" href="/scripts/main.js" as="script" />
+    <link rel="preload" as="font" href="/font/Oswald-Regular.ttf" crossorigin>
+    <link rel="preload" as="font" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" crossorigin>
+    
+    <!-- fancybox -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script>
+    <!-- 百度统计  -->
+    
+    <!-- 谷歌统计  -->
+    
+</head>
+
+    
+        <body class="post-body">
+    
+    
+<header class="header">
+
+    <div class="read-progress"></div>
+    <div class="header-sidebar-menu">&#xe775;</div>
+    <!-- post页的toggle banner  -->
+    
+    <div class="banner">
+            <div class="blog-title">
+                <a href="/" >时光不改&#39;s 记忆碎片</a>
+            </div>
+            <div class="post-title">
+                <a href="#" class="post-name">Ubuntu 1804 搭建openvpn</a>
+            </div>
+    </div>
+    
+    <a class="home-link" href=/>时光不改's 记忆碎片</a>
+</header>
+    <div class="wrapper">
+        <div class="site-intro" style="
+
+
+
+
+
+
+
+height:50vh;
+">
+    
+    <!-- 主页  -->
+    
+    
+    <!-- 404页  -->
+            
+    <div class="site-intro-placeholder"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
+    <div class="site-intro-meta">
+        <!-- 标题  -->
+        <h1 class="intro-title">
+            <!-- 主页  -->
+            
+            Ubuntu 1804 搭建openvpn
+            <!-- 404 -->
+            
+        </h1>
+        <!-- 副标题 -->
+        <p class="intro-subtitle">
+            <!-- 主页副标题  -->
+            
+            
+            <!-- 404 -->
+            
+        </p>
+        <!-- 文章页meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                
+                    <div class="post-intro-read">
+                        <span>字数统计: <span class="post-count word-count">3.6k</span>阅读时长: <span class="post-count reading-time">18 min</span></span>
+                    </div>
+                
+                <div class="post-intro-meta">
+                    <span class="post-intro-calander iconfont-archer">&#xe676;</span>
+                    <span class="post-intro-time">2019/05/09</span>
+                    
+                    <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                        <span class="iconfont-archer">&#xe602;</span>
+                        <span id="busuanzi_value_page_pv"></span>
+                    </span>
+                    
+                    <span class="shareWrapper">
+                        <span class="iconfont-archer shareIcon">&#xe71d;</span>
+                        <span class="shareText">Share</span>
+                        <ul class="shareList">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        
+    </div>
+</div>
+        <script>
+ 
+  // get user agent
+  var browser = {
+    versions: function () {
+      var u = window.navigator.userAgent;
+      return {
+        userAgent: u,
+        trident: u.indexOf('Trident') > -1, //IE内核
+        presto: u.indexOf('Presto') > -1, //opera内核
+        webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+        gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+        mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+        ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+        android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+        iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+        iPad: u.indexOf('iPad') > -1, //是否为iPad
+        webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
+        weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
+        uc: u.indexOf('UCBrowser') > -1 //是否为android下的UC浏览器
+      };
+    }()
+  }
+  console.log("userAgent:" + browser.versions.userAgent);
+
+  // callback
+  function fontLoaded() {
+    console.log('font loaded');
+    if (document.getElementsByClassName('site-intro-meta')) {
+      document.getElementsByClassName('intro-title')[0].classList.add('intro-fade-in');
+      document.getElementsByClassName('intro-subtitle')[0].classList.add('intro-fade-in');
+      var postIntros = document.getElementsByClassName('post-intros')[0]
+      if (postIntros) {
+        postIntros.classList.add('post-fade-in');
+      }
+    }
+  }
+
+  // UC不支持跨域，所以直接显示
+  function asyncCb(){
+    if (browser.versions.uc) {
+      console.log("UCBrowser");
+      fontLoaded();
+    } else {
+      WebFont.load({
+        custom: {
+          families: ['Oswald-Regular']
+        },
+        loading: function () {  //所有字体开始加载
+          // console.log('loading');
+        },
+        active: function () {  //所有字体已渲染
+          fontLoaded();
+        },
+        inactive: function () { //字体预加载失败，无效字体或浏览器不支持加载
+          console.log('inactive: timeout');
+          fontLoaded();
+        },
+        timeout: 5000 // Set the timeout to two seconds
+      });
+    }
+  }
+
+  function asyncErr(){
+    console.warn('script load from CDN failed, will load local script')
+  }
+
+  // load webfont-loader async, and add callback function
+  function async(u, cb, err) {
+    var d = document, t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (cb) { o.addEventListener('load', function (e) { cb(null, e); }, false); }
+    if (err) { o.addEventListener('error', function (e) { err(null, e); }, false); }
+    s.parentNode.insertBefore(o, s);
+  }
+
+  var asyncLoadWithFallBack = function(arr, success, reject) {
+      var currReject = function(){
+        reject()
+        arr.shift()
+        if(arr.length)
+          async(arr[0], success, currReject)
+        }
+
+      async(arr[0], success, currReject)
+  }
+
+  asyncLoadWithFallBack([
+    "https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js", 
+    "https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js",
+    "/lib/webfontloader.min.js"
+  ], asyncCb, asyncErr)
+</script>        
+        <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
+        <div class="container container-unloaded">
+            <main class="main post-page">
+    <article class="article-entry">
+        <h1 id="Ubuntu-1804-搭建openvpn"><a href="#Ubuntu-1804-搭建openvpn" class="headerlink" title="Ubuntu 1804 搭建openvpn"></a>Ubuntu 1804 搭建openvpn</h1><h2 id="1、安装Openvpn和EasyRSA"><a href="#1、安装Openvpn和EasyRSA" class="headerlink" title="1、安装Openvpn和EasyRSA"></a>1、安装Openvpn和EasyRSA</h2><p>#先更新下软件，安装Openvpn<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">apt update</span><br><span class="line">apt upgrade</span><br><span class="line">apt install openvpn</span><br></pre></td></tr></table></figure></p>
+<p>#现在装easyrsa，现在是V3.0.6版本了<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root@AX:~<span class="comment"># cd</span></span><br><span class="line">root@AX:~<span class="comment"># wget -P ~/ https://github.com/OpenVPN/easy-rsa/releases/download/v3.0.5/EasyRSA-unix-3.0.6.tgz</span></span><br><span class="line">root@AX:~<span class="comment"># tar xvf EasyRSA-unix-3.0.6.tgz</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="2、配置Easyrsa及生成公钥"><a href="#2、配置Easyrsa及生成公钥" class="headerlink" title="2、配置Easyrsa及生成公钥"></a>2、配置Easyrsa及生成公钥</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@AX:~<span class="comment"># cd EasyRSA-3.0.6/</span></span><br><span class="line">root@AX:~/EasyRSA-3.0.6<span class="comment"># cp vars.example vars</span></span><br></pre></td></tr></table></figure>
+<p>#拷贝模板并修改vars的参数<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@AX:~/EasyRSA-3.0.6<span class="comment">#vim vars</span></span><br></pre></td></tr></table></figure></p>
+<p>#找到以下，取消注释<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">#set_var EASYRSA_REQ_COUNTRY    &quot;US&quot;</span><br><span class="line">#set_var EASYRSA_REQ_PROVINCE   &quot;California&quot;</span><br><span class="line">#set_var EASYRSA_REQ_CITY       &quot;San Francisco&quot;</span><br><span class="line">#set_var EASYRSA_REQ_ORG        &quot;Copyleft Certificate Co&quot;</span><br><span class="line">#set_var EASYRSA_REQ_EMAIL      &quot;me@example.net&quot;</span><br><span class="line">#set_var EASYRSA_REQ_OU         &quot;My Organizational Unit&quot;</span><br></pre></td></tr></table></figure></p>
+<p>#稍作修改，改成类似下面我的配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">set_var EASYRSA_REQ_COUNTRY     &quot;UK&quot;</span><br><span class="line">set_var EASYRSA_REQ_PROVINCE    &quot;LONDON&quot;</span><br><span class="line">set_var EASYRSA_REQ_CITY        &quot;London&quot;</span><br><span class="line">set_var EASYRSA_REQ_ORG			&quot;xxx&quot;</span><br><span class="line">set_var EASYRSA_REQ_EMAIL       &quot;xxx@xxx.co.uk&quot;</span><br><span class="line">set_var EASYRSA_REQ_OU          &quot;xxx Ltd&quot;</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
+<p>#生成公钥<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@AX:~/EasyRSA-3.0.6<span class="comment"># ./easyrsa init-pki</span></span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">Note: using Easy-RSA configuration from: ./vars</span><br><span class="line">Using SSL: openssl OpenSSL 1.1.0g  2 Nov 2017</span><br><span class="line">init-pki complete; you may now create a CA or requests.</span><br><span class="line">Your newly created PKI dir is: /home/axing/EasyRSA-3.0.6/pki</span><br><span class="line"></span><br><span class="line">root@AX:~/EasyRSA-3.0.6# ./easyrsa build-ca nopass</span><br><span class="line"></span><br><span class="line">Note: using Easy-RSA configuration from: ./vars</span><br><span class="line">Using SSL: openssl OpenSSL 1.1.0g  2 Nov 2017</span><br><span class="line">Generating RSA private key, 2048 bit long modulus</span><br><span class="line">....................+++</span><br><span class="line">e is 65537 (0x010001)</span><br><span class="line">You are about to be asked to enter information that will be incorporated</span><br><span class="line">into your certificate request.</span><br><span class="line">What you are about to enter is what is called a Distinguished Name or a DN.</span><br><span class="line">There are quite a few fields but you can leave some blank</span><br><span class="line">For some fields there will be a default value,</span><br><span class="line">If you enter &apos;.&apos;, the field will be left blank.</span><br><span class="line">-----</span><br><span class="line">Common Name (eg: your user, host, or server name) [Easy-RSA CA]:</span><br><span class="line">CA creation complete and you may now import and sign cert requests.</span><br><span class="line">Your new CA certificate file for publishing is at:</span><br><span class="line">/home/axing/EasyRSA-3.0.6/pki/ca.crt</span><br></pre></td></tr></table></figure>
+<p>“nopass”参数是避免每次都要输入密码，可选项<br>这一步完成后，在pki目录下会生成ca.crt，pki/private目录下生成ca.key</p>
+<h2 id="3、生成服务器证书和加密文件"><a href="#3、生成服务器证书和加密文件" class="headerlink" title="3、生成服务器证书和加密文件"></a>3、生成服务器证书和加密文件</h2><p>#这里的axvpn是我的服务器名称，可以使用默认server作为服务器名称<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">root@CFL-LD8-84:~/EasyRSA-3.0.6# ./easyrsa gen-req axvpn nopass</span><br><span class="line"></span><br><span class="line">Note: using Easy-RSA configuration from: ./vars</span><br><span class="line">Using SSL: openssl OpenSSL 1.1.0g  2 Nov 2017</span><br><span class="line">Generating a 2048 bit RSA private key</span><br><span class="line">....................+++</span><br><span class="line">writing new private key to &apos;/home/axing/EasyRSA-3.0.6/pki/private/axvpn.key.06St6HRfIZ&apos;</span><br><span class="line">-----</span><br><span class="line">You are about to be asked to enter information that will be incorporated</span><br><span class="line">into your certificate request.</span><br><span class="line">What you are about to enter is what is called a Distinguished Name or a DN.</span><br><span class="line">There are quite a few fields but you can leave some blank</span><br><span class="line">For some fields there will be a default value,</span><br><span class="line">If you enter &apos;.&apos;, the field will be left blank.</span><br><span class="line">Common Name (eg: your user, host, or server name) [axvpn]:</span><br><span class="line">Keypair and certificate request completed. Your files are:</span><br><span class="line">req: /home/axing/EasyRSA-3.0.6/pki/reqs/axvpn.req</span><br><span class="line">key: /home/axing/EasyRSA-3.0.6/pki/private/axvpn.key</span><br></pre></td></tr></table></figure></p>
+<p>这里得到两个文件，在pki/private目录下，axvpn.req和axvpn.key<br>拷贝服务器私钥文件到openvpn配置文件目录下<br>root@AX:~/EasyRSA-3.0.6# cp pki/private/axvpn.key /etc/openvpn</p>
+<h2 id="4、生成公钥"><a href="#4、生成公钥" class="headerlink" title="4、生成公钥"></a>4、生成公钥</h2><p>因为同一台服务器即做CA服务器又做VPN服务器，自己给自己签发的时候会生成同名文件，先把服务器的请求文件改个名，再导入请求<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@AX:~/EasyRSA-3.0.6<span class="comment"># mv pki/reqs/axvpn.req pki/reqs/axvpn2.req</span></span><br><span class="line">root@AX:~/EasyRSA-3.0.6<span class="comment"># ./easyrsa import-req pki/reqs/axvpn2.req axvpn</span></span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Note: using Easy-RSA configuration from: ./vars</span><br><span class="line">Using SSL: openssl OpenSSL 1.1.0g  2 Nov 2017</span><br><span class="line">The request has been successfully imported with a short name of: axvpn</span><br><span class="line">You may now use this name to perform signing operations on this request.</span><br></pre></td></tr></table></figure>
+<p>签发请求<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@CFL-LD8-84:~/EasyRSA-3.0.6<span class="comment"># ./easyrsa sign-req server axvpn</span></span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">Note: using Easy-RSA configuration from: ./vars</span><br><span class="line">Using SSL: openssl OpenSSL 1.1.0g  2 Nov 2017</span><br><span class="line">You are about to sign the following certificate.</span><br><span class="line">Please check over the details shown below for accuracy. Note that this request</span><br><span class="line">has not been cryptographically verified. Please be sure it came from a trusted</span><br><span class="line">source or that you have verified the request checksum with the sender.</span><br><span class="line">Request subject, to be signed as a server certificate for 1080 days:</span><br><span class="line">subject=</span><br><span class="line">commonName                = axvpn</span><br><span class="line">Type the word &apos;yes&apos; to continue, or any other input to abort.</span><br><span class="line">Confirm request details: yes</span><br><span class="line">Using configuration from ./safessl-easyrsa.cnf</span><br><span class="line">Can&apos;t open /home/axing/EasyRSA-3.0.6/pki/index.txt.attr for reading, No such file or directory</span><br><span class="line">139895844725184:error:02001002:system library:fopen:No such file or directory:../crypto/bio/bss_file.c:74:fopen(&apos;/home/axing/EasyRSA-3.0.6/pki/index.txt.attr&apos;,&apos;r&apos;)</span><br><span class="line">139895844725184:error:2006D080:BIO routines:BIO_new_file:no such file:../crypto/bio/bss_file.c:81:</span><br><span class="line">Check that the request matches the signature</span><br><span class="line">Signature ok</span><br><span class="line">The Subject&apos;s Distinguished Name is as follows</span><br><span class="line">commonName            :ASN.1 12:&apos;axvpn&apos;</span><br><span class="line">Certificate is to be certified until Dec 18 10:36:38 2021 GMT (1080 days)</span><br><span class="line">Write out database with 1 new entries</span><br><span class="line">Data Base Updated</span><br><span class="line">Certificate created at: /home/axing/EasyRSA-3.0.6/pki/issued/axvpn.crt</span><br></pre></td></tr></table></figure>
+<p>这里有个错误提示，”Can’t open /home/axing/EasyRSA-3.0.6/pki/index.txt.attr for reading, No such file or directory“ 不过不影响使用，结果是把生成的axvpn.crt文件放到了pki/issued目录下。</p>
+<p>把axvpn.crt文件和ca.crt文件一起复制到openvpn配置文件目录下<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@AX:~/EasyRSA-3.0.6<span class="comment"># cp pki/ca.crt pki/issued/axvpn.crt /etc/openvpn/</span></span><br></pre></td></tr></table></figure></p>
+<p>生成加密文件（可选，可以提高VPN安全性），这个比较慢，需要稍等几分钟<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@AX:~/EasyRSA-3.0.6<span class="comment"># ./easyrsa gen-dh</span></span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Note: using Easy-RSA configuration from: ./vars</span><br><span class="line">Using SSL: openssl OpenSSL 1.1.0g  2 Nov 2017</span><br><span class="line">Generating DH parameters, 2048 bit long safe prime, generator 2</span><br><span class="line">This is going to take a long time</span><br><span class="line">..................+..................</span><br><span class="line">DH parameters of size 2048 created at /home/axing/EasyRSA-3.0.6/pki/dh.pem</span><br></pre></td></tr></table></figure>
+<p>在pki目录下生成一个dh.pem的文件，然后生成Diffie-Hellman<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@AX:~/EasyRSA-3.0.6<span class="comment"># openvpn --genkey --secret ta.key</span></span><br></pre></td></tr></table></figure></p>
+<p>现在我们又有了一个ta.key文件，现在把这几个文件复制到openvpn的配置文件目录<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@AX:~/EasyRSA-3.0.6<span class="comment"># cp ta.key pki/dh.pem /etc/openvpn/</span></span><br></pre></td></tr></table></figure></p>
+<p>现在服务器端就都准备好了。</p>
+<h2 id="5、生成客户端证书和密钥"><a href="#5、生成客户端证书和密钥" class="headerlink" title="5、生成客户端证书和密钥"></a>5、生成客户端证书和密钥</h2><p>建一个目录存放客户端文件<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@AX:~/EasyRSA-3.0.6<span class="comment"># mkdir -p ~/client-conf/key</span></span><br><span class="line">root@AX:~/EasyRSA-3.0.6<span class="comment"># chmod -R 700 ~/client-conf/</span></span><br></pre></td></tr></table></figure></p>
+<p>给客户端起名client<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@CFL-LD8-84:~/EasyRSA-3.0.6<span class="comment"># ./easyrsa gen-req client nopass</span></span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">Note: using Easy-RSA configuration from: ./vars</span><br><span class="line">Using SSL: openssl OpenSSL 1.1.0g  2 Nov 2017</span><br><span class="line">Generating a 2048 bit RSA private key</span><br><span class="line">..........................+++</span><br><span class="line">writing new private key to &apos;/home/axing/EasyRSA-3.0.6/pki/private/client.key.wgjLsABJan&apos;</span><br><span class="line">You are about to be asked to enter information that will be incorporated</span><br><span class="line">into your certificate request.</span><br><span class="line">What you are about to enter is what is called a Distinguished Name or a DN.</span><br><span class="line">There are quite a few fields but you can leave some blank</span><br><span class="line">For some fields there will be a default value,</span><br><span class="line">If you enter &apos;.&apos;, the field will be left blank.</span><br><span class="line">-----</span><br><span class="line">Common Name (eg: your user, host, or server name) [client]:</span><br><span class="line">Keypair and certificate request completed. Your files are:</span><br><span class="line">req: /home/axing/EasyRSA-3.0.6/pki/reqs/client.req</span><br><span class="line">key: /home/axing/EasyRSA-3.0.6/pki/private/client.key</span><br></pre></td></tr></table></figure>
+<p>现在pki下生成了client.req，pki/private下生成了client.key，把这个文件放到客户文件夹里<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@AX:~/EasyRSA-3.0.6<span class="comment"># cp pki/private/client.key ~/client-conf/key/</span></span><br></pre></td></tr></table></figure></p>
+<p>跟服务器一样操作，因为会生成同样名称的文件，先改下文件名，再导入请求文件，最后签发请求。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@AX:~/EasyRSA-3.0.6<span class="comment"># ./easyrsa import-req pki/reqs/clienta.req client</span></span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">Note: using Easy-RSA configuration from: ./vars</span><br><span class="line">Using SSL: openssl OpenSSL 1.1.0g  2 Nov 2017</span><br><span class="line">The request has been successfully imported with a short name of: client</span><br><span class="line">You may now use this name to perform signing operations on this request.</span><br><span class="line"></span><br><span class="line">root@AX:~/EasyRSA-3.0.6# ./easyrsa sign-req client client</span><br><span class="line"></span><br><span class="line">Note: using Easy-RSA configuration from: ./vars</span><br><span class="line">Using SSL: openssl OpenSSL 1.1.0g  2 Nov 2017</span><br><span class="line">You are about to sign the following certificate.</span><br><span class="line">Please check over the details shown below for accuracy. Note that this request</span><br><span class="line">has not been cryptographically verified. Please be sure it came from a trusted</span><br><span class="line">source or that you have verified the request checksum with the sender.</span><br><span class="line">Request subject, to be signed as a client certificate for 1080 days:</span><br><span class="line">subject=</span><br><span class="line">commonName                = client</span><br><span class="line">Type the word &apos;yes&apos; to continue, or any other input to abort.</span><br><span class="line">Confirm request details: yes</span><br><span class="line">Using configuration from ./safessl-easyrsa.cnf</span><br><span class="line">Check that the request matches the signature</span><br><span class="line">Signature ok</span><br><span class="line">The Subject&apos;s Distinguished Name is as follows</span><br><span class="line">commonName            :ASN.1 12:&apos;client&apos;</span><br><span class="line">Certificate is to be certified until Dec 18 15:30:48 2021 GMT (1080 days)</span><br><span class="line">Write out database with 1 new entries</span><br><span class="line">Data Base Updated</span><br><span class="line">Certificate created at: /home/axing/EasyRSA-3.0.6/pki/issued/client.crt</span><br></pre></td></tr></table></figure>
+<p>现在生成了client.crt文件<br>把这几个文件复制到客户文件目录中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@AX:~/EasyRSA-3.0.6# cp pki/issued/client.crt ta.key pki/ca.crt ~/client-conf/key/</span><br><span class="line">root@AX:~/EasyRSA-3.0.6# ls ~/client-conf/key/</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ca.crt  client.crt  client.key  ta.key</span><br><span class="line">`</span><br></pre></td></tr></table></figure>
+<p>到这一步，客户端文件就都准备好了。</p>
+<h2 id="6、配置openvpn服务，先把模板拷到配置文件目录"><a href="#6、配置openvpn服务，先把模板拷到配置文件目录" class="headerlink" title="6、配置openvpn服务，先把模板拷到配置文件目录"></a>6、配置openvpn服务，先把模板拷到配置文件目录</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root@AX:~/EasyRSA-3.0.6<span class="comment"># sudo cp /usr/share/doc/openvpn/examples/sample-config-files/server.conf.gz /etc/openvpn/</span></span><br><span class="line">root@AX:~/EasyRSA-3.0.6<span class="comment"># gzip -d /etc/openvpn/server.conf.gz</span></span><br><span class="line">root@AX:~/EasyRSA-3.0.6<span class="comment"># vim /etc/openvpn/server.conf</span></span><br></pre></td></tr></table></figure>
+<p>下面是配置文件的一些修改，列举了可能用的到的</p>
+<p>#监听的端口号，默认1194，如果要改的话防火墙也要相应修改。（可选）<br><code>port 1194</code></p>
+<p>#TCP或UDP，如改成tcp的话，通常端口相应修改成443<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">;proto tcp</span><br><span class="line">proto udp</span><br></pre></td></tr></table></figure></p>
+<p>#”dev tun” will create a routed IP tunnel,<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">;dev tap</span><br><span class="line">dev tun</span><br></pre></td></tr></table></figure></p>
+<p>#设置SSL/TLS根证书(ca)、证书(cert)和私钥(key)，记得我的服务器名是axvpn，这里也要相应修改 （必选）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ca ca.crt</span><br><span class="line">cert axvpn.crt</span><br><span class="line">key axvpn.key</span><br></pre></td></tr></table></figure></p>
+<p>#指定迪菲·赫尔曼参数。</p>
+<p>#默认是dh2048.pem, 记得我们生成了dh.pem，改下 （必选）<br><code>dh dh.pem</code></p>
+<p>#openvpn 所分配的IP段<br><code>server 192.168.0.0 255.255.255.0</code></p>
+<p>#推送路由信息到客户端，以允许客户端能够连接到服务器背后的其他私有子网。 （可选）</p>
+<p>#就是允许客户端访问VPN服务器自身所在的其他局域网<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">;push &quot;route 192.168.10.0 255.255.255.0&quot;</span><br><span class="line">;push &quot;route 192.168.20.0 255.255.255.0&quot;</span><br><span class="line">push &quot;route 10.111.0.0 255.255.0.0&quot;</span><br></pre></td></tr></table></figure></p>
+<p>#如果启用该指令，所有客户端的默认网关都将重定向到VPN，这将导致诸如web浏览器、DNS查询等所有客户端流量都经过VPN。(可选）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">;push &quot;redirect-gateway def1 bypass-dhcp&quot;</span><br></pre></td></tr></table></figure></p>
+<p>#某些具体的Windows网络设置可以被推送到客户端，例如DNS或WINS服务器地址。（可选）</p>
+<p>#下列地址来自opendns.com提供的Public DNS 服务器。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">;push &quot;dhcp-option DNS 208.67.222.222&quot;</span><br><span class="line">;push &quot;dhcp-option DNS 208.67.220.220&quot;</span><br><span class="line">push &quot;dhcp-option DNS 202.106.0.20&quot;</span><br></pre></td></tr></table></figure></p>
+<p># 如果有注释的话，取消这句的注释，再加一句  (必选）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tls-auth ta.key 0 # 该文件应该保密</span><br><span class="line">key-direction 0</span><br></pre></td></tr></table></figure></p>
+<p># 选择一个密码加密算法。<br># 该配置项也必须复制到每个客户端配置文件中。<br># 添加SHA256算法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cipher AES-256-CBC</span><br><span class="line">auth SHA256</span><br></pre></td></tr></table></figure></p>
+<p># 在完成初始化工作之后，降低OpenVPN守护进程的权限， (最好取消注释）<br># 该指令仅限于非Windows系统中使用。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">user nobody</span><br><span class="line">group nobody</span><br></pre></td></tr></table></figure></p>
+<p># Notify the client that when the server restarts so it<br># can automatically reconnect.<br># 如果协议改成了TCP，这里数值要改成0<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">explicit-exit-notify 1</span><br></pre></td></tr></table></figure></p>
+<h2 id="7、调整服务器网络配置"><a href="#7、调整服务器网络配置" class="headerlink" title="7、调整服务器网络配置"></a>7、调整服务器网络配置</h2><p>首先设置允许ip转发，设置并使其生效<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@AX:~/EasyRSA-3.0.6<span class="comment"># vim /etc/sysctl.conf</span></span><br></pre></td></tr></table></figure></p>
+<p># Uncomment the next line to enable packet forwarding for IPv4<br># 取消注释<br><code>net.ipv4.ip_forward=1</code></p>
+<p>#保存退出<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@AX:~/EasyRSA-3.0.6<span class="comment"># sysctl -p</span></span><br></pre></td></tr></table></figure></p>
+<p>net.ipv4.ip_forward = 1</p>
+<p>修改UFW防火墙配置，这之前要确认ubuntu启用了ufw，并做了初始设定（允许SSH等）</p>
+<p>#确认网络接口名称，这里是ens3<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@AX:~/EasyRSA-3.0.6<span class="comment"># ip route | grep def</span></span><br></pre></td></tr></table></figure></p>
+<p>default via 46.102.170.81 dev ens3 onlink<br>修改配置文件，在文件前面添加默认策略设置，以伪装vpn流量<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@AX:~/EasyRSA-3.0.6# vim /etc/ufw/before.rules</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># START OPENVPN RULES</span><br><span class="line"># NAT table rules</span><br><span class="line">*nat</span><br><span class="line">:POSTROUTING ACCEPT [0:0]</span><br><span class="line"># Allow traffic from OpenVPN client to eth0(changeto the interface you discovered!)</span><br><span class="line">-A POSTROUTING -s 10.8.0.0/8 -o ens3 -j MASQUERADE</span><br><span class="line">COMMIT</span><br><span class="line"># END OPENVPN RULES</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>保存退出。</p>
+<p>修改防火墙规则，允许默认转发数据包，把”DROP”改成”ACCEPT”<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@AX:~/EasyRSA-3.0.6<span class="comment"># vim /etc/default/ufw</span></span><br></pre></td></tr></table></figure></p>
+<p>DEFAULT_FORWARD_POLICY=”ACCEPT”<br>允许vpn流量通过防火墙<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@AX:~/EasyRSA-3.0.6# ufw allow 1194/udp</span><br><span class="line">root@AX:~/EasyRSA-3.0.6# ufw allow openssh</span><br></pre></td></tr></table></figure></p>
+<p>我的防火墙看起来是这个样子的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@AX:~/EasyRSA-3.0.6# ufw status</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">iptables -t nat -A POSTROUTING -s 192.168.0.0/24 -j SNAT --to-source 10.10.4.182</span><br><span class="line">watch -d &quot;iptables -t nat -nvL&quot;</span><br></pre></td></tr></table></figure>
+<h2 id="8、启动openvpn服务，创建开机启动"><a href="#8、启动openvpn服务，创建开机启动" class="headerlink" title="8、启动openvpn服务，创建开机启动"></a>8、启动openvpn服务，创建开机启动</h2><p>这里的@server是指使用server.conf配置文件。第一条命令没什么输出的话表示运行正常，再运行第二天命令设置开机启动。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@AX:~/EasyRSA-3.0.6<span class="comment"># systemctl start openvpn@server</span></span><br><span class="line">root@AX:~/EasyRSA-3.0.6<span class="comment"># systemctl enable openvpn@server.service</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="9、创建客户端配置文件"><a href="#9、创建客户端配置文件" class="headerlink" title="9、创建客户端配置文件"></a>9、创建客户端配置文件</h2><p>终于到最后一步了，拷个模板先，当然，名字随便起<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@AX:~/EasyRSA-3.0.6<span class="comment"># cp /usr/share/doc/openvpn/examples/sample-config-files/client.conf  ~/client-conf/axclient.conf</span></span><br></pre></td></tr></table></figure></p>
+<p>修改配置文件，要与server里的配置对应<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@AX:~/EasyRSA-3.0.6<span class="comment"># vim ~/client-conf/axclient.conf</span></span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">remote xx.xx.xxx.xx 1194</span><br><span class="line">;remote my-server-2 1194</span><br><span class="line"># Downgrade privileges after initialization (non-Windows only)</span><br><span class="line">user nobody</span><br><span class="line">group nogroup</span><br><span class="line"># SSL/TLS parms.</span><br><span class="line"># See the server config file for more</span><br><span class="line"># description.  It&apos;s best to use</span><br><span class="line"># a separate .crt/.key file pair</span><br><span class="line"># for each client.  A single ca</span><br><span class="line"></span><br><span class="line"># file can be used for all clients.</span><br><span class="line">ca ca.crt</span><br><span class="line">cert client.crt</span><br><span class="line">key client.key</span><br><span class="line"></span><br><span class="line"># If a tls-auth key is used on the server</span><br><span class="line"></span><br><span class="line"># then every client must also have the key.</span><br><span class="line">tls-auth ta.key 1</span><br><span class="line">key-direction 1</span><br><span class="line"># Select a cryptographic cipher.</span><br><span class="line"># If the cipher option is used on the server</span><br><span class="line"># then you must also specify it here.</span><br><span class="line"># Note that v2.4 client/server will automatically</span><br><span class="line"># negotiate AES-256-GCM in TLS mode.</span><br><span class="line"># See also the ncp-cipher option in the manpage</span><br><span class="line">cipher AES-256-CBC</span><br><span class="line">auth SHA256</span><br><span class="line">#很多文档都添加下面这些</span><br><span class="line"></span><br><span class="line"># 这几行建议添加，如果是linux客户端而且有/etc/openvpn/update-resolv-conf文件就取消注释</span><br><span class="line"># 如果不是就保持注释状态</span><br><span class="line"># script-security 2</span><br><span class="line"># up /etc/openvpn/update-resolv-conf</span><br><span class="line"># down /etc/openvpn/update-resolv-conf</span><br><span class="line">保存退出。</span><br></pre></td></tr></table></figure>
+<p>按照说明建立一个sh脚本生成客户端配置文件<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim ~/client-configs/make_config.sh</span><br></pre></td></tr></table></figure></p>
+<p>复制以下内容：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="comment"># First argument: Client identifier</span></span><br><span class="line">KEY_DIR=~/client-configs/keys</span><br><span class="line">OUTPUT_DIR=~/client-configs/files</span><br><span class="line">BASE_CONFIG=~/client-configs/base.conf</span><br><span class="line">cat <span class="variable">$&#123;BASE_CONFIG&#125;</span> \</span><br><span class="line">&lt;(<span class="built_in">echo</span> -e <span class="string">'&lt;ca&gt;'</span>) \</span><br><span class="line"><span class="variable">$&#123;KEY_DIR&#125;</span>/ca.crt \</span><br><span class="line">&lt;(<span class="built_in">echo</span> -e <span class="string">'&lt;/ca&gt;\n&lt;cert&gt;'</span>) \</span><br><span class="line"><span class="variable">$&#123;KEY_DIR&#125;</span>/<span class="variable">$&#123;1&#125;</span>.crt \</span><br><span class="line">&lt;(<span class="built_in">echo</span> -e <span class="string">'&lt;/cert&gt;\n&lt;key&gt;'</span>) \</span><br><span class="line"><span class="variable">$&#123;KEY_DIR&#125;</span>/<span class="variable">$&#123;1&#125;</span>.key \</span><br><span class="line">&lt;(<span class="built_in">echo</span> -e <span class="string">'&lt;/key&gt;\n&lt;tls-auth&gt;'</span>) \</span><br><span class="line"><span class="variable">$&#123;KEY_DIR&#125;</span>/ta.key \</span><br><span class="line">&lt;(<span class="built_in">echo</span> -e <span class="string">'&lt;/tls-auth&gt;'</span>) \</span><br><span class="line">&gt; <span class="variable">$&#123;OUTPUT_DIR&#125;</span>/<span class="variable">$&#123;1&#125;</span>.ovpn</span><br></pre></td></tr></table></figure></p>
+<p>修改权限：<code>chmod 700 ~/client-configs/make_config.sh</code><br>运行脚本，生成客户端配置文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd ~/client-configs</span><br><span class="line">./make_config.sh client</span><br></pre></td></tr></table></figure></p>
+<p>结语</p>
+<p>所有步骤都没问题的话，会在~/client-configs/file文件夹中生成一个.ovpn文件，大功告成，可以使用了。</p>
+<h2 id="后期维护"><a href="#后期维护" class="headerlink" title="后期维护"></a>后期维护</h2><h3 id="生成windows客户端用户："><a href="#生成windows客户端用户：" class="headerlink" title="生成windows客户端用户："></a>生成windows客户端用户：</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">./easyrsa build-client-full lihj</span><br><span class="line"><span class="built_in">cd</span> EasyRSA-v3.0.6/</span><br><span class="line">cp ta.key pki/ca.crt pki/issued/lihj.crt pki/private/lihj.key ~/client-conf/key_lihj</span><br></pre></td></tr></table></figure>
+<p>修改客户端配置文件<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp axclient.conf lihj.conf</span><br></pre></td></tr></table></figure></p>
+<p>…<br>KEY_DIR=~/client-conf/key_lihj<br>OUTPUT_DIR=~/client-conf/files<br>BASE_CONFIG=~/client-conf/lihj.conf<br>…<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp make_config.sh  make_config_lihj.sh</span><br></pre></td></tr></table></figure></p>
+<p>修改<br>…<br>ca ca.crt<br>cert lihj.crt<br>key lihj.key<br>…<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./make_config_lihj.sh lihj</span><br></pre></td></tr></table></figure></p>
+<h3 id="Openvpn-撤销签署的证书-删除用户"><a href="#Openvpn-撤销签署的证书-删除用户" class="headerlink" title="Openvpn 撤销签署的证书(删除用户)"></a>Openvpn 撤销签署的证书(删除用户)</h3><p><a href="https://wiki.archlinux.org/index.php/Easy-rsa" target="_blank" rel="noopener">https://wiki.archlinux.org/index.php/Easy-rsa</a></p>
+<p>Revoking certificates and alerting the OpenVPN server</p>
+<p>Revoke a certificate 撤销一个证书<br>Over time, it may become necessary to revoke a certificate thus denying access to the affected user(s). This example revokes the “client1” certificate.<br>On the CA machine:</p>
+<p><code>cd /etc/easy-rsa</code><br>撤销命令revoke<br><code>easyrsa revoke client1</code><br>生成CRL文件(撤销证书的列表)<br><code>easyrsa gen-crl</code><br>This will produce the CRL file /etc/easy-rsa/pki/crl.pem that needs to be transferred to the OpenVPN server and made active there.</p>
+<p>Alert the OpenVPN server<br>On the CA machine:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cp /etc/easy-rsa/pki/crl.pem /tmp</span><br><span class="line">chown foo /tmp/crl.pem</span><br></pre></td></tr></table></figure></p>
+<p>On the OpenVPN machine, copy crl.pem and inform the server to read it:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mv /tmp/crl.pem /etc/openvpn</span><br><span class="line">chown root:root /etc/openvpn/crl.pem</span><br></pre></td></tr></table></figure></p>
+<p>Edit /etc/openvpn/server.conf uncommenting the crl-verify directive, then restart <a href="mailto:openvpn@server.service" target="_blank" rel="noopener">openvpn@server.service</a> to re-read it:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/openvpn/server.conf</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">crl-verify /etc/openvpn/crl.pem</span><br></pre></td></tr></table></figure>
+<p>重启openvpn服务生效<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">systemctl stop openvpn@server</span><br><span class="line">systemctl start openvpn@server</span><br></pre></td></tr></table></figure></p>
+
+    </article>
+    <!-- license  -->
+    
+        <div class="license-wrapper">
+            <p>原文作者：<a href="https://zhaijiahui.github.io">zhaijiahui</a>
+            <p>原文链接：<a href="https://zhaijiahui.github.io/2019/05/09/openvpn服务端安装/">https://zhaijiahui.github.io/2019/05/09/openvpn服务端安装/</a>
+            <p>发表日期：<a href="https://zhaijiahui.github.io/2019/05/09/openvpn服务端安装/">May 9th 2019, 10:44:07 am</a>
+            <p>更新日期：<a href="https://zhaijiahui.github.io/2019/05/09/openvpn服务端安装/">May 9th 2019, 10:44:44 am</a>
+            <p>版权声明：本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
+        </div>
+    
+    <!-- paginator  -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href= "/2019/05/08/shadowsocks服务端安装/" title= "Ubuntu 16.04下Shadowsocks服务器端安装及优化">
+                    <div class="prevTitle">Ubuntu 16.04下Shadowsocks服务器端安装及优化</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- 评论插件 -->
+    <!-- 来必力City版安装代码 -->
+
+<!-- City版安装代码已完成 -->
+    
+    
+    <!-- partial('_partial/comment/changyan') -->
+    <!--PC版-->
+
+
+    
+    
+
+    <!-- 评论 -->
+</main>
+            <!-- profile -->
+            
+        </div>
+        <footer class="footer footer-unloaded">
+    <!-- social  -->
+    
+    <div class="social">
+        
+    
+        
+            
+                <a href="mailto:826806614@qq.com" class="iconfont-archer email" title=email ></a>
+            
+        
+    
+        
+            
+                <a href="//github.com/zhaijiahui" class="iconfont-archer github" target="_blank" title=github></a>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+    </div>
+    
+    <!-- powered by Hexo  -->
+    <div class="copyright">
+        <span id="hexo-power">Powered by <a href="https://hexo.io/" target="_blank">Hexo</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
+    </div>
+    <!-- 不蒜子  -->
+    
+    <div class="busuanzi-container">
+    
+     
+    <span id="busuanzi_container_site_pv">PV: <span id="busuanzi_value_site_pv"></span> :)</span>
+    
+    </div>
+    
+</footer>
+    </div>
+    <!-- toc -->
+    
+    <div class="toc-wrapper" style=
+    
+
+
+
+
+
+
+
+top:50vh;
+
+    >
+        <div class="toc-catalog">
+            <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+        </div>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Ubuntu-1804-搭建openvpn"><span class="toc-number">1.</span> <span class="toc-text">Ubuntu 1804 搭建openvpn</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1、安装Openvpn和EasyRSA"><span class="toc-number">1.1.</span> <span class="toc-text">1、安装Openvpn和EasyRSA</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2、配置Easyrsa及生成公钥"><span class="toc-number">1.2.</span> <span class="toc-text">2、配置Easyrsa及生成公钥</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3、生成服务器证书和加密文件"><span class="toc-number">1.3.</span> <span class="toc-text">3、生成服务器证书和加密文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4、生成公钥"><span class="toc-number">1.4.</span> <span class="toc-text">4、生成公钥</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5、生成客户端证书和密钥"><span class="toc-number">1.5.</span> <span class="toc-text">5、生成客户端证书和密钥</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6、配置openvpn服务，先把模板拷到配置文件目录"><span class="toc-number">1.6.</span> <span class="toc-text">6、配置openvpn服务，先把模板拷到配置文件目录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7、调整服务器网络配置"><span class="toc-number">1.7.</span> <span class="toc-text">7、调整服务器网络配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8、启动openvpn服务，创建开机启动"><span class="toc-number">1.8.</span> <span class="toc-text">8、启动openvpn服务，创建开机启动</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9、创建客户端配置文件"><span class="toc-number">1.9.</span> <span class="toc-text">9、创建客户端配置文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#后期维护"><span class="toc-number">1.10.</span> <span class="toc-text">后期维护</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#生成windows客户端用户："><span class="toc-number">1.10.1.</span> <span class="toc-text">生成windows客户端用户：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Openvpn-撤销签署的证书-删除用户"><span class="toc-number">1.10.2.</span> <span class="toc-text">Openvpn 撤销签署的证书(删除用户)</span></a></li></ol></li></ol></li></ol>
+    </div>
+    
+    <div class="back-top iconfont-archer">&#xe639;</div>
+    <div class="sidebar sidebar-hide">
+    <ul class="sidebar-tabs sidebar-tabs-active-0">
+        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
+        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
+        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
+    </ul>
+    <div class="sidebar-content sidebar-content-show-archive">
+          <div class="sidebar-panel-archives">
+    <!-- 在ejs中将archive按照时间排序 -->
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <div class="total-and-search">
+        <div class="total-archive">
+        Total : 10
+        </div>
+        <!-- search  -->
+        
+    </div>
+    
+    <div class="post-archive">
+    
+    
+    
+    
+    <div class="archive-year"> 2019 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/09</span><a class="archive-post-title" href= "/2019/05/09/openvpn服务端安装/" >Ubuntu 1804 搭建openvpn</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/08</span><a class="archive-post-title" href= "/2019/05/08/shadowsocks服务端安装/" >Ubuntu 16.04下Shadowsocks服务器端安装及优化</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">01/28</span><a class="archive-post-title" href= "/2019/01/28/upload-labs/" >upload-labs</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
+    
+    <div class="archive-year"> 2018 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/10</span><a class="archive-post-title" href= "/2018/10/10/ecshop273/" >ECShop 2.7.3 SQL注入/代码执行漏洞分析</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/08</span><a class="archive-post-title" href= "/2018/10/08/PHP常见函数/" >PHP常见函数总结</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/07</span><a class="archive-post-title" href= "/2018/10/07/hexo的一些常规操作/" >hexo的一些常规操作</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/07</span><a class="archive-post-title" href= "/2018/10/07/几个不错的hexo主题/" >几个不错的hexo主题</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/28</span><a class="archive-post-title" href= "/2018/09/28/在github上搭建个人网站/" >在github上搭建个人网站</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
+    
+    <div class="archive-year"> Invalid date </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span><a class="archive-post-title" href= "/2018/10/19/JAWS/" >网络摄像头的安全问题</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
+    
+    <div class="archive-year"> Invalid date </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span><a class="archive-post-title" href= "/2018/10/18/IDscan/" >IDscan 敏感文件扫描器</a>
+        </li>
+    
+    </div>
+  </div>
+        <div class="sidebar-panel-tags">
+    <div class="sidebar-tags-name">
+    
+        <span class="sidebar-tag-name" data-tags="PHP"><span class="iconfont-archer">&#xe606;</span>PHP</span>
+    
+    </div>
+    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
+    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
+    缺失模块。<br/>
+    1、请确保node版本大于6.2<br/>
+    2、在博客根目录（注意不是archer根目录）执行以下命令：<br/>
+    <span style="color: #f75357; font-size: 1rem; line-height: 2rem;">npm i hexo-generator-json-content --save</span><br/>
+    3、在根目录_config.yml里添加配置：
+    <pre style="color: #787878; font-size: 0.6rem;">
+jsonContent:
+  meta: false
+  pages: false
+  posts:
+    title: true
+    date: true
+    path: true
+    text: false
+    raw: false
+    content: false
+    slug: false
+    updated: false
+    comments: false
+    link: false
+    permalink: false
+    excerpt: false
+    categories: true
+    tags: true</pre>
+    </div> 
+    <div class="sidebar-tags-list"></div>
+</div>
+        <div class="sidebar-panel-categories">
+    <div class="sidebar-categories-name">
+    
+        <span class="sidebar-category-name" data-categories="脚本工具"><span class="iconfont-archer">&#xe60a;</span>脚本工具</span>
+    
+        <span class="sidebar-category-name" data-categories="代码审计"><span class="iconfont-archer">&#xe60a;</span>代码审计</span>
+    
+        <span class="sidebar-category-name" data-categories="Hexo"><span class="iconfont-archer">&#xe60a;</span>Hexo</span>
+    
+        <span class="sidebar-category-name" data-categories="学习笔记"><span class="iconfont-archer">&#xe60a;</span>学习笔记</span>
+    
+    </div>
+    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
+    <div class="sidebar-categories-list"></div>
+</div>
+    </div>
+</div> 
+    <script>
+    var siteMeta = {
+        root: "/",
+        author: "zhaijiahui"
+    }
+</script>
+    <!-- CDN failover -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+    <script type="text/javascript">
+        if (typeof window.$ === 'undefined')
+        {
+            console.warn('jquery load from jsdelivr failed, will load local script')
+            document.write('<script src="/lib/jquery.min.js">\x3C/script>')
+        }
+    </script>
+    <script src="/scripts/main.js"></script>
+    <!-- algolia -->
+    
+    <!-- busuanzi  -->
+    
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+    <!-- CNZZ  -->
+    
+    </div>
+    <!-- async load share.js -->
+    
+        <script src="/scripts/share.js" async></script>    
+     
+    </body>
+</html>
+
+
